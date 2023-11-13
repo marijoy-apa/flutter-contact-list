@@ -1,3 +1,9 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:contact_list/model/contacts.dart';
+import 'package:contact_list/model/number.dart';
+import 'package:contact_list/providers/contact_list_provider.dart';
 import 'package:contact_list/providers/search_list_provider.dart';
 import 'package:contact_list/screen/create_contact.dart';
 import 'package:contact_list/widgets/contact_list/contact_item.dart';
@@ -7,8 +13,17 @@ import 'package:contact_list/widgets/contact_list/search_contact.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ContactList extends ConsumerWidget {
+class ContactList extends ConsumerStatefulWidget {
   ContactList({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() {
+    return _ContactListState();
+  }
+}
+
+class _ContactListState extends ConsumerState<ContactList> {
+  late Future<void> contactList;
 
   final TextEditingController searchKeyword = TextEditingController();
 
@@ -23,7 +38,13 @@ class ContactList extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    contactList = ref.read(contactListProvider.notifier).loadItems();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final contactLists = ref.watch(filteredListProvider);
     final searchItem = ref.watch(searchKeywordProvider);
     searchKeyword.text = searchItem;

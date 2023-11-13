@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:contact_list/model/contacts.dart';
@@ -49,12 +50,13 @@ class _CreateNewContactScreenState
     final numList = getValidNumberList();
 
     newContact = ContactInfo(
-        firstName: enteredFirstName.text,
-        lastName: enteredLastName.text,
-        contactNumber: numList,
-        imageFile: _selectedImage,
-        emergencyContact: isEmergencyContact,
-        notes: enteredNotes.text);
+      firstName: enteredFirstName.text,
+      lastName: enteredLastName.text,
+      contactNumber: numList,
+      imageFile: _selectedImage,
+      emergencyContact: isEmergencyContact,
+      notes: enteredNotes.text,
+    );
 
     Navigator.of(context).pop();
   }
