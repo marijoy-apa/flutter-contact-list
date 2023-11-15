@@ -60,7 +60,7 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
     }
   }
 
-  Future <void> loadItems() async {
+  Future<void> loadItems() async {
     final uri = Uri.https(projectUrl, 'contact-list.json');
 
     try {
@@ -221,8 +221,8 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
         ),
       );
     } catch (e) {
-            state = [];
-            isLoading = false;
+      state = [];
+      isLoading = false;
       error = 'Something went wrong please try again later. ';
     }
   }
