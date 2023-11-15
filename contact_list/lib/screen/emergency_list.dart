@@ -1,6 +1,8 @@
 import 'package:contact_list/providers/contact_list_provider.dart';
 import 'package:contact_list/providers/search_list_provider.dart';
 import 'package:contact_list/widgets/contact_list/contact_item.dart';
+import 'package:contact_list/widgets/contact_list/error_fetching.dart';
+import 'package:contact_list/widgets/contact_list/loading.dart';
 import 'package:contact_list/widgets/contact_list/no_list_added.dart';
 import 'package:contact_list/widgets/contact_list/no_search_result.dart';
 import 'package:contact_list/widgets/contact_list/search_contact.dart';
@@ -15,11 +17,18 @@ class EmergencyList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final emergencyList = ref.watch(emergencyListProvider);
     final searchItem = ref.watch(searchKeywordProvider);
+    final isLoading = ref.watch(contactListProvider.notifier).isLoading;
+    final error = ref.watch(contactListProvider.notifier).error;
+
     searchKeyword.text = searchItem;
 
     Widget content = noListAdded('Emergency Contacts', context);
 
-    if (emergencyList.isEmpty && searchItem.trim().isNotEmpty) {
+    if (error.isNotEmpty) {
+      content = errorMessage(error, context);
+    } else if (isLoading) {
+      content = loadingWidget(searchItem, context);
+    } else if (emergencyList.isEmpty && searchItem.trim().isNotEmpty) {
       content = noSearchResult(searchItem, context);
     }
 
