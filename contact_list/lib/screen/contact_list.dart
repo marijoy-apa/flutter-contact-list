@@ -7,6 +7,8 @@ import 'package:contact_list/providers/contact_list_provider.dart';
 import 'package:contact_list/providers/search_list_provider.dart';
 import 'package:contact_list/screen/create_contact.dart';
 import 'package:contact_list/widgets/contact_list/contact_item.dart';
+import 'package:contact_list/widgets/contact_list/error_fetching.dart';
+import 'package:contact_list/widgets/contact_list/loading.dart';
 import 'package:contact_list/widgets/contact_list/no_list_added.dart';
 import 'package:contact_list/widgets/contact_list/no_search_result.dart';
 import 'package:contact_list/widgets/contact_list/search_contact.dart';
@@ -24,6 +26,7 @@ class ContactList extends ConsumerStatefulWidget {
 
 class _ContactListState extends ConsumerState<ContactList> {
   late Future<void> contactList;
+  bool isLoading = false;
 
   final TextEditingController searchKeyword = TextEditingController();
 
@@ -47,11 +50,16 @@ class _ContactListState extends ConsumerState<ContactList> {
   Widget build(BuildContext context) {
     final contactLists = ref.watch(filteredListProvider);
     final searchItem = ref.watch(searchKeywordProvider);
+    final bool isLoading = ref.watch(contactListProvider.notifier).isLoading;
+    final String error = ref.watch(contactListProvider.notifier).error;
     searchKeyword.text = searchItem;
-
     Widget content = noListAdded('Contacts', context);
 
-    if (contactLists.isEmpty && searchItem.trim().isNotEmpty) {
+    if (error.isNotEmpty) {
+      content = errorMessage(error, context);
+    } else if (isLoading) {
+      content = loadingWidget(searchItem, context);
+    } else if (contactLists.isEmpty && searchItem.trim().isNotEmpty) {
       content = noSearchResult(searchItem, context);
     }
 

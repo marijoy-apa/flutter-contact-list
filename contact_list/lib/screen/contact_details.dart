@@ -17,23 +17,28 @@ class ContactDetailsScreen extends ConsumerWidget {
   onClickEdit(BuildContext context, ContactInfo contact) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) =>
-            EditContactScreen(contactItem: contact),
+        builder: (context) => EditContactScreen(contactItem: contact),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ContactInfo contact = ref
-        .watch(contactListProvider)
-        .where((list) => list.id == contactItem.id)
-        .toList()[0];
-    
+    ContactInfo contact = contactItem;
+    final String error = ref.watch(contactListProvider.notifier).error;
+    try {
+      contact = ref
+          .watch(contactListProvider)
+          .where((list) => list.id == contactItem.id)
+          .toList()[0];
+    } catch (e) {
+      // Navigator.of(context).pop();
+      print('error 2 here');
+    }
+
     String fullName = contactItem.firstName;
     if (contactItem.lastName != null) {
-      fullName =
-          "${contactItem.firstName} ${contactItem.lastName!}";
+      fullName = "${contactItem.firstName} ${contactItem.lastName!}";
     }
     return Scaffold(
       appBar: AppBar(
@@ -52,7 +57,9 @@ class ContactDetailsScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton(
-              onPressed: (){onClickEdit(context, contact);},
+              onPressed: () {
+                onClickEdit(context, contact);
+              },
               child: const Text(
                 'Edit',
                 style: TextStyle(color: Colors.blue),
@@ -72,7 +79,6 @@ class ContactDetailsScreen extends ConsumerWidget {
                 fullName,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  
                     fontSize: 25,
                     color: Theme.of(context).iconTheme.color!.withOpacity(0.7)),
               ),
@@ -83,17 +89,28 @@ class ContactDetailsScreen extends ConsumerWidget {
               const SizedBox(height: 50),
               phoneDetailsContainer(context, contactItem.contactNumber),
               const SizedBox(height: 12),
-              notesDetailsContainer(context, contactItem.notes?? '',),
+              notesDetailsContainer(
+                context,
+                contactItem.notes ?? '',
+              ),
               const SizedBox(height: 12),
               setEmergencyContactButton(
                   onTap: () {
+                    if (error.isNotEmpty) {
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(error),
+                        ),
+                      );
+                      return;
+                    }
                     ref
                         .read(contactListProvider.notifier)
                         .onToggleEmergencyContact(contact);
                   },
                   context: context,
                   isEmergencyContact: contact.emergencyContact),
-           
             ],
           ),
         ),

@@ -74,9 +74,6 @@ class _CreateNewContactScreenState extends ConsumerState<EditContactScreen> {
         imageFile: _selectedImage,
         emergencyContact: isEmergencyContact,
         notes: enteredNotes.text);
-
-    Navigator.of(context).pop();
-    Navigator.of(context).pop();
   }
 
   void validateForm(String value) {
@@ -112,19 +109,22 @@ class _CreateNewContactScreenState extends ConsumerState<EditContactScreen> {
     validateForm('value');
   }
 
-  void onAddContact() {
-    if (isFormValid) {
-      _onSubmit();
-      ref.read(contactListProvider.notifier).onAddNewContact(newContact!);
-    } else {
-      null;
-    }
-  }
-
   void onEditContact() {
+    String error = ref.watch(contactListProvider.notifier).error;
     if (isFormValid) {
       _onSubmit();
       ref.read(contactListProvider.notifier).onEditContact(newContact!);
+      if (error.isNotEmpty) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error),
+          ),
+        );
+      } else {
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+      }
     } else {
       null;
     }
