@@ -82,13 +82,16 @@ class _ContactListState extends ConsumerState<ContactList> {
           contactLists.isEmpty
               ? content
               : Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.only(left: 25, right: 15),
-                    itemCount: contactLists.length,
-                    itemBuilder: (context, index) => ContactItem(
-                      contactItem: contactLists[index],
-                      index: index,
-                      screen: 'contacts',
+                  child: RefreshIndicator(
+                    onRefresh: () => ref.read(contactListProvider.notifier).loadItems(),
+                    child: ListView.builder(
+                      padding: const EdgeInsets.only(left: 25, right: 15),
+                      itemCount: contactLists.length,
+                      itemBuilder: (context, index) => ContactItem(
+                        contactItem: contactLists[index],
+                        index: index,
+                        screen: 'contacts',
+                      ),
                     ),
                   ),
                 ),

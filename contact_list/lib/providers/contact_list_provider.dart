@@ -60,7 +60,7 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
     }
   }
 
-  void loadItems() async {
+  Future <void> loadItems() async {
     final uri = Uri.https(projectUrl, 'contact-list.json');
 
     try {
@@ -165,7 +165,7 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
     final uri = Uri.https(projectUrl, 'contact-list.json');
 
     try {
-      final response = await http.post(
+      await http.post(
         uri,
         headers: {'Content-Type': 'application/json'},
         body: json.encode(
