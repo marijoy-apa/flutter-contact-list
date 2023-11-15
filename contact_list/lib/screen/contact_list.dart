@@ -1,8 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:contact_list/model/contacts.dart';
-import 'package:contact_list/model/number.dart';
 import 'package:contact_list/providers/contact_list_provider.dart';
 import 'package:contact_list/providers/search_list_provider.dart';
 import 'package:contact_list/screen/create_contact.dart';
@@ -42,7 +37,7 @@ class _ContactListState extends ConsumerState<ContactList> {
 
   @override
   void initState() {
-    contactList = ref.read(contactListProvider.notifier).loadItems();
+    ref.read(contactListProvider.notifier).loadItems();
     super.initState();
   }
 
@@ -50,9 +45,11 @@ class _ContactListState extends ConsumerState<ContactList> {
   Widget build(BuildContext context) {
     final contactLists = ref.watch(filteredListProvider);
     final searchItem = ref.watch(searchKeywordProvider);
-    final bool isLoading = ref.watch(contactListProvider.notifier).isLoading;
-    final String error = ref.watch(contactListProvider.notifier).error;
+    final isLoading = ref.watch(contactListProvider.notifier).isLoading;
+    final error = ref.watch(contactListProvider.notifier).error;
+    
     searchKeyword.text = searchItem;
+
     Widget content = noListAdded('Contacts', context);
 
     if (error.isNotEmpty) {
@@ -68,14 +65,7 @@ class _ContactListState extends ConsumerState<ContactList> {
         scrolledUnderElevation: 0.0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: const Center(child: Text('Contacts')),
-        actions: [
-          IconButton(
-            onPressed: () {
-              _navigateToCreateContact(context);
-            },
-            icon: const Icon(Icons.add),
-          )
-        ],
+
       ),
       body: Column(
         children: [
@@ -92,25 +82,28 @@ class _ContactListState extends ConsumerState<ContactList> {
           contactLists.isEmpty
               ? content
               : Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.only(left: 25, right: 15),
-                    itemCount: contactLists.length,
-                    itemBuilder: (context, index) => ContactItem(
-                      contactItem: contactLists[index],
-                      index: index,
-                      screen: 'contacts',
+                  child: RefreshIndicator(
+                    onRefresh: () => ref.read(contactListProvider.notifier).loadItems(),
+                    child: ListView.builder(
+                      padding: const EdgeInsets.only(left: 25, right: 15),
+                      itemCount: contactLists.length,
+                      itemBuilder: (context, index) => ContactItem(
+                        contactItem: contactLists[index],
+                        index: index,
+                        screen: 'contacts',
+                      ),
                     ),
                   ),
                 ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: error.isEmpty ? FloatingActionButton(
         onPressed: () {
           _navigateToCreateContact(context);
         },
         shape: const CircleBorder(),
         child: const Icon(Icons.add),
-      ),
+      ) : null,
     );
   }
 }

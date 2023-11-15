@@ -4,9 +4,7 @@ import 'dart:io';
 import 'package:contact_list/model/contacts.dart';
 import 'package:contact_list/model/number.dart';
 import 'package:contact_list/providers/search_list_provider.dart';
-import 'package:contact_list/widgets/contact_list/error_fetching.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:contact_list/data/dummy_data.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -19,6 +17,7 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
   String error = '';
 
   void onToggleEmergencyContact(ContactInfo contact) async {
+    error = '';
     state = state.map((list) {
       if (list.id == contact.id) {
         return list.copyWith(
@@ -28,8 +27,8 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
       }
       return list;
     }).toList();
-    error = '';
 
+    //convert contact number to pass in put/post request
     List<Map<String, dynamic>> contactNumberList =
         contact.contactNumber.map((contact) {
       return {
@@ -41,7 +40,7 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
     final uri = Uri.https(projectUrl, 'contact-list/${contact.id}.json');
 
     try {
-      final response = await http.put(
+      await http.put(
         uri,
         headers: {'Content-Type': 'application/json'},
         body: json.encode(
@@ -61,7 +60,7 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
     }
   }
 
-  Future<void> loadItems() async {
+  Future <void> loadItems() async {
     final uri = Uri.https(projectUrl, 'contact-list.json');
 
     try {
@@ -166,7 +165,7 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
     final uri = Uri.https(projectUrl, 'contact-list.json');
 
     try {
-      final response = await http.post(
+      await http.post(
         uri,
         headers: {'Content-Type': 'application/json'},
         body: json.encode(
@@ -180,9 +179,6 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
           },
         ),
       );
-
-      print(response.statusCode);
-
       loadItems();
     } catch (e) {
       state = [];
@@ -210,7 +206,7 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
     final uri = Uri.https(projectUrl, 'contact-list/${contact.id}.json');
 
     try {
-      final response = await http.put(
+      await http.put(
         uri,
         headers: {'Content-Type': 'application/json'},
         body: json.encode(
