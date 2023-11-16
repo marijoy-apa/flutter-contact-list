@@ -19,10 +19,11 @@ class CreateNewContactScreen extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<CreateNewContactScreen> createState() =>
-      _CreateNewContactScreenState();
+      CreateNewContactScreenState();
 }
 
-class _CreateNewContactScreenState
+@visibleForTesting
+class CreateNewContactScreenState
     extends ConsumerState<CreateNewContactScreen> {
   final formKey = GlobalKey<FormState>();
   TextEditingController enteredFirstName = TextEditingController();
@@ -101,6 +102,7 @@ class _CreateNewContactScreenState
     }
   }
 
+  @visibleForTesting
   List<NumberList> getValidNumberList() {
     numberList = [];
     for (int i = 0; i < phoneController.length; i++) {

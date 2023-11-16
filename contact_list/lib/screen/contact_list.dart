@@ -97,13 +97,16 @@ class _ContactListState extends ConsumerState<ContactList> {
                 ),
         ],
       ),
-      floatingActionButton: error.isEmpty ? FloatingActionButton(
+      floatingActionButton: 
+      // error.isEmpty ? 
+      FloatingActionButton(
         onPressed: () {
           _navigateToCreateContact(context);
         },
         shape: const CircleBorder(),
         child: const Icon(Icons.add),
-      ) : null,
+      ) 
+      // : null,
     );
   }
 }
