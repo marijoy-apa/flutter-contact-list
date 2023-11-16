@@ -13,11 +13,18 @@ void main() {
       ),
     );
   }
+
   group('Common UI in contact List page', () {
     testWidgets('Contacts text displayed', (WidgetTester tester) async {
       await setup(tester);
       await tester.pump();
       expect(find.text('Contacts'), findsNWidgets(2));
+    });
+
+    testWidgets('Emergency List text displayed', (WidgetTester tester) async {
+      await setup(tester);
+      await tester.pump();
+      expect(find.text('Emergency List'), findsOneWidget);
     });
   });
 
@@ -50,6 +57,14 @@ void main() {
       await tester.pump();
       expect(clearButton, findsNothing);
       expect(find.text('Hello Nothing here'), findsNothing);
+    });
+
+    testWidgets('Searching invalid keyword displays message',
+        (WidgetTester tester) async {
+      await setup(tester);
+      await tester.enterText(searchField, 'Hello Nothing here');
+      await tester.pump();
+
     });
   });
   // });
