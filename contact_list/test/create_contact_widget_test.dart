@@ -19,11 +19,30 @@ void main() {
     await tester.pump();
   }
 
+  Future<void> ensureTap(WidgetTester tester, Finder finder) async {
+    tester.ensureVisible(finder);
+    await tester.pumpAndSettle();
+    await tester.tap(finder);
+    await tester.pumpAndSettle();
+  }
+
   final addPhoneButton = find.byIcon(Icons.add_circle);
   final phoneTextField = find.widgetWithText(TextField, 'Phone');
   final addEmergencyContact = find.text('Add to emergency contacts');
   final removeEmergencyContact = find.text('Remove from emergency contacts');
   final cancelButton = find.widgetWithText(TextButton, 'Cancel');
+  final firstNameTextField = find.widgetWithText(TextField, 'First Name');
+  final lastNameTextField = find.widgetWithText(TextField, 'Last Name');
+
+
+  final notesTextField = find.descendant(
+      of: find
+          .ancestor(
+            of: find.text('Notes'),
+            matching: find.byType(Column),
+          )
+          .first,
+      matching: find.byType(TextFormField));
 
   group('Create New Contact page validation', () {
     testWidgets('Create New Contact UI displayed', (WidgetTester tester) async {
@@ -46,21 +65,14 @@ void main() {
     testWidgets('Clicking Add Phone will add phone fields',
         (WidgetTester tester) async {
       await setup(tester);
-      tester.ensureVisible(addPhoneButton);
-      await tester.pumpAndSettle();
-      await tester.tap(addPhoneButton);
-      await tester.pumpAndSettle();
-
+      await ensureTap(tester, addPhoneButton);
       expect(phoneTextField, findsNWidgets(2));
     });
 
     testWidgets('Toggle Add/Remove to emergency contacts ',
         (WidgetTester tester) async {
       await setup(tester);
-      tester.ensureVisible(addEmergencyContact);
-      await tester.pumpAndSettle();
-      await tester.tap(addEmergencyContact);
-      await tester.pump();
+      await ensureTap(tester, addEmergencyContact);
 
       expect(removeEmergencyContact, findsOneWidget);
       expect(addEmergencyContact, findsNothing);
@@ -74,13 +86,34 @@ void main() {
     testWidgets('Clicking Cancel button will remove the Create Contacts page',
         (WidgetTester tester) async {
       await setup(tester);
-
-      tester.ensureVisible(cancelButton);
-      await tester.pumpAndSettle();
-      await tester.tap(cancelButton);
-      await tester.pump();
-
+      await ensureTap(tester, cancelButton);
       expect(find.byWidget(ContactsScreen()), findsNothing);
+    });
+  });
+
+  group('Validate Text fields', () {
+    testWidgets('Validate First Name textfield', (WidgetTester tester) async {
+      await setup(tester);
+      await tester.enterText(firstNameTextField, 'John');
+      expect(find.text('John'), findsOneWidget);
+    });
+
+    testWidgets('Validate Last Name textfield', (WidgetTester tester) async {
+      await setup(tester);
+      await tester.enterText(lastNameTextField, 'Doe');
+      expect(find.text('Doe'), findsOneWidget);
+    });
+
+    testWidgets('Validate Phone textfield', (WidgetTester tester) async {
+      await setup(tester);
+      await tester.enterText(phoneTextField, '09123456789');
+      expect(find.text('09123456789'), findsOneWidget);
+    });
+
+    testWidgets('Validate Notes textfield', (WidgetTester tester) async {
+      await setup(tester);
+      await tester.enterText(notesTextField, 'Hello world!');
+      expect(find.text('Hello world!'), findsOneWidget);
     });
   });
 }
