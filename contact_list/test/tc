@@ -1,0 +1,6 @@
+To Do scenarios
+- integrate http request 
+- to create unit test for edit * list
+- unit test for edit on details page
+- enable and disable of Done button 
+- widget test for error message (can be converted to unit test)
