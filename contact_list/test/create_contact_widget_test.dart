@@ -26,6 +26,7 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  final doneButton = find.widgetWithText(TextButton, 'Done');
   final addPhoneButton = find.byIcon(Icons.add_circle);
   final phoneTextField = find.widgetWithText(TextField, 'Phone');
   final addEmergencyContact = find.text('Add to emergency contacts');
@@ -33,7 +34,6 @@ void main() {
   final cancelButton = find.widgetWithText(TextButton, 'Cancel');
   final firstNameTextField = find.widgetWithText(TextField, 'First Name');
   final lastNameTextField = find.widgetWithText(TextField, 'Last Name');
-
 
   final notesTextField = find.descendant(
       of: find
@@ -114,6 +114,29 @@ void main() {
       await setup(tester);
       await tester.enterText(notesTextField, 'Hello world!');
       expect(find.text('Hello world!'), findsOneWidget);
+    });
+  });
+
+  group('Enabling/Disabling of Done button', () {
+    testWidgets(
+        'Done button enabled when First Name and contact number are populated',
+        (WidgetTester tester) async {
+      await setup(tester);
+      await tester.enterText(firstNameTextField, 'John');
+      await tester.enterText(phoneTextField, '0909090909');
+      await tester.pump();
+      Text buttonWidget = tester.widget(find.text('Done'));
+      expect(buttonWidget.style!.color, Colors.blue);
+    });
+
+    testWidgets(
+        'Done button disabled when First Name / contact number not populated',
+        (WidgetTester tester) async {
+      await setup(tester);
+      await tester.enterText(firstNameTextField, 'John');
+      await tester.pump();
+      Text buttonWidget = tester.widget(find.text('Done'));
+      expect(buttonWidget.style!.color, isNot(Colors.blue));
     });
   });
 }
