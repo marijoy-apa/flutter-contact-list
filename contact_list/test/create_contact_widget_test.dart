@@ -129,15 +129,14 @@ void main() {
       expect(buttonWidget.style!.color, Colors.blue);
     });
 
-        testWidgets(
-        'Done button disabled when First Name and contact number are populated',
+    testWidgets(
+        'Done button disabled when First Name / contact number not populated',
         (WidgetTester tester) async {
       await setup(tester);
       await tester.enterText(firstNameTextField, 'John');
-      await tester.enterText(phoneTextField, '0909090909');
       await tester.pump();
       Text buttonWidget = tester.widget(find.text('Done'));
-      expect(buttonWidget.style!.color, Colors.blue);
+      expect(buttonWidget.style!.color, isNot(Colors.blue));
     });
   });
 }
