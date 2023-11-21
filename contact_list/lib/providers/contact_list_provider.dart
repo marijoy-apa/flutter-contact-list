@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:contact_list/model/contacts.dart';
 import 'package:contact_list/model/number.dart';
 import 'package:contact_list/providers/search_list_provider.dart';
+import 'package:contact_list/services/database.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:http/http.dart' as http;
@@ -60,14 +61,12 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
     }
   }
 
-  Future<void> loadItems() async {
-    final uri = Uri.https(projectUrl, 'contact-list.json');
+  Future<void> loadItems({http.Client? client}) async {
 
     try {
-      final response = await http.get(uri);
-      print(response.statusCode);
-
+      final response = await Database().loadDatabase();
       print(response.body);
+      
       if (response.statusCode >= 400) {
         error = 'Unable to fetch data. Please try agian later';
         isLoading = false;

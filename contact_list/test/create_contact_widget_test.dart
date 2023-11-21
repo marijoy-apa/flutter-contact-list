@@ -139,4 +139,18 @@ void main() {
       expect(buttonWidget.style!.color, isNot(Colors.blue));
     });
   });
+
+  testWidgets(
+        'Able to navigate to contact list screen after adding new contact list',
+        (WidgetTester tester) async {
+      await setup(tester);
+      await tester.enterText(firstNameTextField, 'John');
+      await tester.enterText(phoneTextField, '0909090909');
+      await tester.pump();
+      Text buttonWidget = tester.widget(find.text('Done'));
+      expect(buttonWidget.style!.color, Colors.blue);
+
+    await ensureTap(tester, doneButton);
+      expect(find.byWidget(ContactsScreen()), findsNothing);
+    });
 }
