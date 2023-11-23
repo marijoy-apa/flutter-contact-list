@@ -4,3 +4,11 @@ To Do scenarios
 - unit test for edit on details page
 - enable and disable of Done button 
 - widget test for error message (can be converted to unit test)
+
+
+improve unit test structure
+
+* what is throw exception
+* to recheck all functions
+* image file
+

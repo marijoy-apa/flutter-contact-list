@@ -1,18 +1,16 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:contact_list/model/contacts.dart';
-import 'package:contact_list/model/number.dart';
 import 'package:contact_list/providers/search_list_provider.dart';
-import 'package:contact_list/services/database.dart';
+import 'package:contact_list/services/add_contact.dart';
+import 'package:contact_list/services/delete_contact.dart';
+import 'package:contact_list/services/fetch_contact.dart';
+import 'package:contact_list/services/update_contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:http/http.dart' as http;
-
-final projectUrl = 'flutter-contact-list-e240c-default-rtdb.firebaseio.com';
-
 class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
-  ContactListNotifier() : super([]);
+  ContactListNotifier({this.contactList})
+      : super(contactList != null ? _sortContacts(contactList) : []);
+
+  final List<ContactInfo>? contactList;
 
   bool isLoading = true;
   String error = '';
@@ -28,101 +26,38 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
       }
       return list;
     }).toList();
-
-    //convert contact number to pass in put/post request
-    List<Map<String, dynamic>> contactNumberList =
-        contact.contactNumber.map((contact) {
-      return {
-        'contactNum': contact.digit,
-        'numType': contact.typeName.name,
-      };
-    }).toList();
-
-    final uri = Uri.https(projectUrl, 'contact-list/${contact.id}.json');
-
-    try {
-      await http.put(
-        uri,
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(
-          {
-            'firstName': contact.firstName,
-            'lastName': contact.lastName,
-            'number': contactNumberList,
-            'imageFile': contact.imageFile?.path,
-            'emergencyContact': !contact.emergencyContact,
-            'notes': contact.notes,
-          },
-        ),
-      );
-    } catch (e) {
-      error = 'Unable to update data. Please try again later';
-      state = [];
+    final updatedContact = contact.copyWith(
+      emergencyContact: !contact.emergencyContact,
+      id: contact.id,
+    );
+    if (contactList == null) {
+      try {
+        await updateContact(contact: updatedContact);
+      } catch (e) {
+        error = 'Unable to update data. Please try again later';
+        state = [];
+      }
     }
   }
 
-  Future<void> loadItems({http.Client? client}) async {
-
-    try {
-      final response = await Database().loadDatabase();
-      print(response.body);
-      
-      if (response.statusCode >= 400) {
-        error = 'Unable to fetch data. Please try agian later';
-        isLoading = false;
-        state = [];
-        return;
-      }
-      if (response.body == 'null') {
-        error = '';
-        state = [];
-        isLoading = false;
-        return;
-      }
-
-      final Map<String, dynamic> listData = json.decode(response.body);
-      final List<ContactInfo> _loadedItems = [];
-
-      for (var data in listData.entries) {
-        //fetching numberList object from db
-        final List<dynamic> contactNumberData = data.value['number'];
-        final List<NumberList> contactNumbers = contactNumberData.map(
-          (numberData) {
-            final numType = NumberTypes.values.firstWhere(
-                (enumValue) => enumValue.name == numberData['numType']);
-            return NumberList(
-              numType,
-              numberData['contactNum'],
-            );
-          },
-        ).toList();
-
-        //to check if imageFile is empty
-        File? imageFile;
-        if (data.value['imageFile'] != null) {
-          imageFile = File(data.value['imageFile']);
+  Future<void> loadItems() async {
+    if (contactList == null) {
+      try {
+        final _loadedItems = await FetchContactServices().fetchContacts();
+        state = _sortContacts(_loadedItems);
+        if (_loadedItems.isEmpty) {
+          state = [];
+          isLoading = false;
+          error = '';
+          return;
         }
-
-        _loadedItems.add(
-          ContactInfo(
-            id: data.key,
-            firstName: data.value['firstName'],
-            lastName: data.value['lastName'],
-            contactNumber: contactNumbers,
-            imageFile: imageFile,
-            emergencyContact: data.value['emergencyContact'],
-            notes: data.value['notes'],
-          ),
-        );
+        isLoading = false;
+        error = '';
+      } catch (e) {
+        error = 'Something went wrong. Please try again later.';
+        isLoading = false;
+        state = [];
       }
-
-      state = _sortContacts(_loadedItems);
-      isLoading = false;
-      error = '';
-    } catch (e) {
-      error = 'Something went wrong. Please try again later.';
-      isLoading = false;
-      state = [];
     }
   }
 
@@ -133,18 +68,20 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
     state = updatedContacts;
     error = '';
 
-    final url = Uri.https(projectUrl, 'contact-list/${contact.id}.json');
-    try {
-      final response = await http.delete(url);
-      if (response.statusCode >= 400) {
-        final updatedContacts = [...state];
-        updatedContacts.insert(index, contact);
-        state = updatedContacts;
+    if (contactList == null) {
+      try {
+        final response = await deleteContact(contact: contact);
+
+        if (response.statusCode >= 400) {
+          final updatedContacts = [...state];
+          updatedContacts.insert(index, contact);
+          state = updatedContacts;
+        }
+      } catch (e) {
+        error = 'Something went wrong. Please try again later.';
+        isLoading = false;
+        state = [];
       }
-    } catch (e) {
-      error = 'Something went wrong. Please try again later.';
-      isLoading = false;
-      state = [];
     }
   }
 
@@ -153,33 +90,16 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
     state = _sortContacts(updated);
     error = '';
 
-    List<Map<String, dynamic>> contactNumberList =
-        contact.contactNumber.map((contact) {
-      return {
-        'contactNum': contact.digit,
-        'numType': contact.typeName.name,
-      };
-    }).toList();
-
-    final uri = Uri.https(projectUrl, 'contact-list.json');
-
     try {
-      await http.post(
-        uri,
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(
-          {
-            'firstName': contact.firstName,
-            'lastName': contact.lastName,
-            'number': contactNumberList,
-            'imageFile': contact.imageFile?.path,
-            'emergencyContact': contact.emergencyContact,
-            'notes': contact.notes,
-          },
-        ),
-      );
+      final response = await addContacts(contact: contact);
+      if (response.statusCode != 200) {
+        state = [];
+        isLoading = false;
+        error = 'Something went wrong please try again later. ';
+      }
       loadItems();
     } catch (e) {
+      print('oooops');
       state = [];
       isLoading = false;
       error = 'Something went wrong please try again later. ';
@@ -194,35 +114,14 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
       return list;
     }).toList();
 
-    List<Map<String, dynamic>> contactNumberList =
-        contact.contactNumber.map((contact) {
-      return {
-        'contactNum': contact.digit,
-        'numType': contact.typeName.name,
-      };
-    }).toList();
-
-    final uri = Uri.https(projectUrl, 'contact-list/${contact.id}.json');
-
-    try {
-      await http.put(
-        uri,
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(
-          {
-            'firstName': contact.firstName,
-            'lastName': contact.lastName,
-            'number': contactNumberList,
-            'imageFile': contact.imageFile?.path,
-            'emergencyContact': contact.emergencyContact,
-            'notes': contact.notes,
-          },
-        ),
-      );
-    } catch (e) {
-      state = [];
-      isLoading = false;
-      error = 'Something went wrong please try again later. ';
+    if (contactList == null) {
+      try {
+        await updateContact(contact: contact);
+      } catch (e) {
+        state = [];
+        isLoading = false;
+        error = 'Something went wrong please try again later. ';
+      }
     }
   }
 
