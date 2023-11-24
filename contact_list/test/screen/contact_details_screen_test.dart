@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:contact_list/model/contacts.dart';
 import 'package:contact_list/providers/contact_list_provider.dart';
+import 'package:contact_list/screen/contact_list.dart';
+import 'package:contact_list/screen/edit_contact.dart';
 import 'package:contact_list/screen/tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,7 +12,6 @@ import 'package:flutter_test/flutter_test.dart';
 import '../test_data/contact_details.dart';
 
 void main() {
-
   Future<void> ensureTap(WidgetTester tester, Finder finder) async {
     tester.ensureVisible(finder);
     await tester.pumpAndSettle();
@@ -75,10 +78,32 @@ void main() {
       expect(find.text('Remove from emergency contacts'), findsOneWidget);
     });
 
+    testWidgets('Verify clicking of emergency button',
+        (WidgetTester tester) async {
+      await setup(tester, [emergencyContact]);
+      await ensureTap(tester, find.text('Remove from emergency contacts'));
+
+      expect(find.text('Add to emergency contacts'), findsOneWidget);
+    });
+
     testWidgets('Verify contacts and edit button', (WidgetTester tester) async {
       await setup(tester, [emergencyContact]);
       expect(find.text('Contacts'), findsOneWidget);
       expect(find.text('Edit'), findsOneWidget);
+    });
+
+    testWidgets('Verify Edit button navigate to Edit page',
+        (WidgetTester tester) async {
+      await setup(tester, [emergencyContact]);
+      await ensureTap(tester, find.text('Edit'));
+      expect(find.byType(EditContactScreen), findsOneWidget);
+    });
+
+    testWidgets('Verify Contacts button navigate to Contact List Page',
+        (WidgetTester tester) async {
+      await setup(tester, [emergencyContact]);
+      await ensureTap(tester, find.text('Contacts'));
+      expect(find.byType(ContactList), findsOneWidget);
     });
   });
 }

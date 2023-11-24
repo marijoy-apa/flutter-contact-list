@@ -57,7 +57,7 @@ class _ContactListState extends ConsumerState<ContactList> {
     } else if (isLoading) {
       content = loadingWidget(searchItem, context);
     } else if (contactLists.isEmpty && searchItem.trim().isNotEmpty) {
-      content = noSearchResult(searchItem, context);
+      content = NoSearchResult(searchItem: searchItem,);
     }
 
     return Scaffold(

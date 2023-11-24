@@ -103,8 +103,8 @@ void main() {
       await setup(tester, contactListTest);
 
       for (var contact in contactListTest) {
-        expect(find.textContaining(contact.firstName), findsAtLeast(1));
-        expect(find.textContaining(contact.firstName), findsAtLeast(1));
+        expect(find.textContaining(contact.firstName), findsAtLeastNWidgets(1));
+        expect(find.textContaining(contact.firstName), findsAtLeastNWidgets(1));
       }
       // }
     });

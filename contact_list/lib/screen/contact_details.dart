@@ -32,8 +32,7 @@ class ContactDetailsScreen extends ConsumerWidget {
           .where((list) => list.id == contactItem.id)
           .toList()[0];
     } catch (e) {
-      // Navigator.of(context).pop();
-      print('error 2 here');
+      
     }
 
     String fullName = contactItem.firstName;

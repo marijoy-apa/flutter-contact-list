@@ -12,7 +12,7 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
 
   final List<ContactInfo>? contactList;
 
-  bool isLoading = true;
+  bool isLoading = false;
   String error = '';
 
   void onToggleEmergencyContact(ContactInfo contact) async {
@@ -42,6 +42,8 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
 
   Future<void> loadItems() async {
     if (contactList == null) {
+          isLoading = true;
+
       try {
         final _loadedItems = await FetchContactServices().fetchContacts();
         state = _sortContacts(_loadedItems);

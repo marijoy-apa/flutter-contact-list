@@ -29,7 +29,7 @@ class EmergencyList extends ConsumerWidget {
     } else if (isLoading) {
       content = loadingWidget(searchItem, context);
     } else if (emergencyList.isEmpty && searchItem.trim().isNotEmpty) {
-      content = noSearchResult(searchItem, context);
+      content = NoSearchResult(searchItem: searchItem,);
     }
 
     return Scaffold(

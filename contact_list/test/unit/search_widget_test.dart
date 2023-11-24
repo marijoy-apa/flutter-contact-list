@@ -1,12 +1,23 @@
+import 'package:contact_list/providers/contact_list_provider.dart';
+import 'package:contact_list/providers/search_list_provider.dart';
 import 'package:contact_list/screen/tabs.dart';
+import 'package:contact_list/widgets/contact_list/no_search_result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../test_data/contact_list.dart';
 
 void main() {
   Future<void> setup(WidgetTester tester) async {
     await tester.pumpWidget(
       ProviderScope(
+        overrides: [
+          contactListProvider.overrideWith(
+              (ref) => ContactListNotifier(contactList: contactListTest)),
+          searchKeywordProvider.overrideWith(
+              (ref) => SearchUserController(searchString: 'Found')),
+        ],
         child: MaterialApp(
           home: ContactsScreen(),
         ),
@@ -35,6 +46,9 @@ void main() {
     testWidgets('Search field is displayed and clear icon is not displayed',
         (WidgetTester tester) async {
       await setup(tester);
+      await tester.enterText(searchField, '');
+      await tester.pump();
+
       expect(searchField, findsOneWidget);
       expect(clearButton, findsNothing);
     });
@@ -62,9 +76,8 @@ void main() {
     testWidgets('Searching invalid keyword displays message',
         (WidgetTester tester) async {
       await setup(tester);
-      await tester.enterText(searchField, 'Hello Nothing here');
-      await tester.pump();
-
+      expect(find.textContaining('Check the spelling or try a new search.'),
+          findsOneWidget);
     });
   });
 }
