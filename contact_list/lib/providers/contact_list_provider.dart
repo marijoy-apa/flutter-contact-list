@@ -15,7 +15,8 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
   bool isLoading = false;
   String error = '';
 
-  void onToggleEmergencyContact(ContactInfo contact) async {
+  void onToggleEmergencyContact(ContactInfo contact,
+      {updateContactMock}) async {
     error = '';
     state = state.map((list) {
       if (list.id == contact.id) {
@@ -32,7 +33,10 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
     );
     if (contactList == null) {
       try {
-        await updateContact(contact: updatedContact);
+        updateContactMock == null
+            ? await UpdateContactServices()
+                .updateContact(contact: updatedContact)
+            : await updateContactMock.updateContact(contact: updatedContact);
       } catch (e) {
         error = 'Unable to update data. Please try again later';
         state = [];
@@ -40,11 +44,13 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
     }
   }
 
-  Future<void> loadItems() async {
+  Future<void> loadItems({fetchContact}) async {
     if (contactList == null) {
-          isLoading = true;
+      isLoading = true;
       try {
-        final _loadedItems = await FetchContactServices().fetchContacts();
+        final _loadedItems = fetchContact == null
+            ? await FetchContactServices().fetchContacts()
+            : await fetchContact.fetchContacts();
         state = _sortContacts(_loadedItems);
         if (_loadedItems.isEmpty) {
           state = [];
@@ -106,7 +112,7 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
     }
   }
 
-  void onEditContact(ContactInfo contact) async {
+  void onEditContact(ContactInfo contact, {onEditContactMock}) async {
     state = state.map((list) {
       if (list.id == contact.id) {
         return contact.copyWith(id: list.id);
@@ -116,7 +122,10 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
 
     if (contactList == null) {
       try {
-        await updateContact(contact: contact);
+        // await UpdateContactServices().updateContact(contact: contact);
+        onEditContactMock == null
+            ? await UpdateContactServices().updateContact(contact: contact)
+            : await onEditContactMock.updateContact(contact: contact);
       } catch (e) {
         state = [];
         isLoading = false;
