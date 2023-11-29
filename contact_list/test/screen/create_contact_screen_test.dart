@@ -141,16 +141,38 @@ void main() {
   });
 
   testWidgets(
-        'Able to navigate to contact list screen after adding new contact list',
-        (WidgetTester tester) async {
-      await setup(tester);
-      await tester.enterText(firstNameTextField, 'John');
-      await tester.enterText(phoneTextField, '0909090909');
-      await tester.pump();
-      Text buttonWidget = tester.widget(find.text('Done'));
-      expect(buttonWidget.style!.color, Colors.blue);
+      'Able to navigate to contact list screen after adding new contact list',
+      (WidgetTester tester) async {
+    await setup(tester);
+    await tester.enterText(firstNameTextField, 'John');
+    await tester.enterText(phoneTextField, '0909090909');
+    await tester.pump();
+    Text buttonWidget = tester.widget(find.text('Done'));
+    expect(buttonWidget.style!.color, Colors.blue);
 
     await ensureTap(tester, doneButton);
-      expect(find.byWidget(ContactsScreen()), findsNothing);
-    });
+    expect(find.byWidget(ContactsScreen()), findsNothing);
+  });
+
+  testWidgets(
+      'Select Number Type dialog pops up when clicking the Number dropdown',
+      (WidgetTester tester) async {
+    await setup(tester);
+    await ensureTap(tester, find.byKey(Key('numType-dropdown-button')));
+    expect(find.byType(Dialog), findsOneWidget);
+  });
+
+  testWidgets('Should be able to change the num type',
+      (WidgetTester tester) async {
+    await setup(tester);
+    await ensureTap(tester, find.byKey(Key('numType-dropdown-button')));
+    await ensureTap(tester, find.text('Fax'));
+
+    expect(find.text('Fax'), findsNWidgets(2));
+  });
+
+  testWidgets('Should be able to pick an image', (WidgetTester tester) async {
+    await setup(tester);
+    await ensureTap(tester, find.text('Add photo'));
+  });
 }

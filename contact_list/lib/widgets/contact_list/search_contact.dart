@@ -7,20 +7,18 @@ Widget searchContainer({
   required Function() onClickClose,
 }) =>
     Container(
-      
       margin: const EdgeInsets.only(left: 20, right: 20, bottom: 13),
       height: 50,
       width: double.infinity,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          color: Theme.of(context).colorScheme.primaryContainer,
-          
-          ),
+        borderRadius: BorderRadius.circular(15),
+        color: Theme.of(context).colorScheme.primaryContainer,
+      ),
       child: Row(
         children: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Icon(
               Icons.search,
               color: Theme.of(context).iconTheme.color,
             ),

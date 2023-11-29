@@ -22,6 +22,7 @@ Widget inputContactNumber({
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GestureDetector(
+          key: Key('numType-dropdown-button'),
           child: Container(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primaryContainer,

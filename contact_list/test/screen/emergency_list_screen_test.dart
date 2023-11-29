@@ -35,7 +35,6 @@ void main() {
 
     List<Widget> getEmergencyIcons(WidgetTester tester) {
       final icons = tester.widgetList(find.byType(Icon));
-
       final emergencyIcons = icons.where((widget) {
         if (widget is Icon) {
           final Icon widgetIcon = widget;
@@ -44,7 +43,6 @@ void main() {
         }
         return false;
       }).toList();
-
       return emergencyIcons;
     }
 
@@ -57,12 +55,10 @@ void main() {
       'Verify only emergency icons displayed in each contact list',
       (WidgetTester tester) async {
         await setup(tester, contactListTest);
-
         expect(getEmergencyIcons(tester).length, emergencyListTest.length);
         for (var contact in emergencyListTest) {
           var ind = emergencyListTest.indexOf(contact);
           Icon widgetIcon = getEmergencyIcons(tester)[ind] as Icon;
-
           expect(widgetIcon.icon, Icons.emergency);
         }
       },
@@ -82,7 +78,6 @@ void main() {
           tester, find.widgetWithIcon(IconButton, Icons.emergency).first);
 
       expect(find.textContaining(emergencyListTest[0].firstName), findsNothing);
-      // }
     });
 
     testWidgets('Verify correct Names are rendered',

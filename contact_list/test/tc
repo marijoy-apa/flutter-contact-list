@@ -6,9 +6,8 @@ To Do scenarios
 - widget test for error message (can be converted to unit test)
 
 
-improve unit test structure
+* improve unit test structure
+* add helper methods (ensureTap method)
+* Should be able to pick an image - to check this scenario
 
-* what is throw exception
-* to recheck all functions
-* image file
 

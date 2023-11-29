@@ -43,7 +43,6 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
   Future<void> loadItems() async {
     if (contactList == null) {
           isLoading = true;
-
       try {
         final _loadedItems = await FetchContactServices().fetchContacts();
         state = _sortContacts(_loadedItems);
@@ -101,7 +100,6 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
       }
       loadItems();
     } catch (e) {
-      print('oooops');
       state = [];
       isLoading = false;
       error = 'Something went wrong please try again later. ';

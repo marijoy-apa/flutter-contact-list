@@ -1,7 +1,7 @@
-
 import 'package:contact_list/model/contacts.dart';
 import 'package:contact_list/providers/contact_list_provider.dart';
 import 'package:contact_list/screen/edit_contact.dart';
+import 'package:contact_list/screen/tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -100,25 +100,29 @@ void main() {
   });
 
   group('Validate Edit Page Text fields enabled', () {
-    testWidgets('Validate First Name textfield editable', (WidgetTester tester) async {
+    testWidgets('Validate First Name textfield editable',
+        (WidgetTester tester) async {
       await setup(tester, contactDetails);
       await tester.enterText(firstNameTextField, 'John');
       expect(find.text('John'), findsOneWidget);
     });
 
-    testWidgets('Validate Last Name textfield editable', (WidgetTester tester) async {
+    testWidgets('Validate Last Name textfield editable',
+        (WidgetTester tester) async {
       await setup(tester, contactDetails);
       await tester.enterText(lastNameTextField, 'Doe');
       expect(find.text('Doe'), findsOneWidget);
     });
 
-    testWidgets('Validate Phone textfield editable', (WidgetTester tester) async {
+    testWidgets('Validate Phone textfield editable',
+        (WidgetTester tester) async {
       await setup(tester, contactDetails);
       await tester.enterText(phoneTextField, '09123456789');
       expect(find.text('09123456789'), findsOneWidget);
     });
 
-    testWidgets('Validate Notes textfield editable', (WidgetTester tester) async {
+    testWidgets('Validate Notes textfield editable',
+        (WidgetTester tester) async {
       await setup(tester, contactDetails);
       await tester.enterText(notesTextField, 'Hello world!');
       expect(find.text('Hello world!'), findsOneWidget);
@@ -146,6 +150,30 @@ void main() {
       await tester.pump();
       Text buttonWidget = tester.widget(find.text('Save'));
       expect(buttonWidget.style!.color, isNot(Colors.blue));
+    });
+
+    testWidgets('Able to save modified contact details',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            contactListProvider.overrideWith(
+                (ref) => ContactListNotifier(contactList: [contactDetails])),
+          ],
+          child: MaterialApp(
+            home: ContactsScreen(),
+          ),
+        ),
+      );
+      await tester.pump();
+      await ensureTap(tester, find.text('Mary Doe'));
+      await ensureTap(tester, find.text('Edit'));
+      expect(find.text('Save'), findsOneWidget);
+      await tester.enterText(firstNameTextField, 'John');
+      await tester.enterText(phoneTextField, '0909090909');
+      await tester.pumpAndSettle();
+      await ensureTap(tester, find.text('Save'));
+      expect(find.text('Save'), findsNothing);
     });
   });
 
@@ -203,5 +231,4 @@ void main() {
       expect(find.text('Remove from emergency contacts'), findsOneWidget);
     });
   });
-
 }

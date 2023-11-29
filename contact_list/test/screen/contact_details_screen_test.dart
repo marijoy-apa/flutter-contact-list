@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:contact_list/model/contacts.dart';
 import 'package:contact_list/providers/contact_list_provider.dart';
 import 'package:contact_list/screen/contact_list.dart';
