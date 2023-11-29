@@ -17,7 +17,7 @@ void main() {
       return http.Response('{"name":"-NjkVYyLr0qSvXEsYG8J"}', 200,
           headers: {'content-type': 'application/json'});
     });
-    final response = await deleteContact(client: client, contact: addedContact);
+    final response = await DeleteContactServices().deleteContact(client: client, contact: addedContact);
     expect(response, isA<http.Response>());
     expect(response.statusCode, 200);
   });

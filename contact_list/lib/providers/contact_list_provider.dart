@@ -15,7 +15,7 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
   bool isLoading = false;
   String error = '';
 
-  void onToggleEmergencyContact(ContactInfo contact,
+  Future<void> onToggleEmergencyContact(ContactInfo contact,
       {updateContactMock}) async {
     error = '';
     state = state.map((list) {
@@ -33,10 +33,8 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
     );
     if (contactList == null) {
       try {
-        updateContactMock == null
-            ? await UpdateContactServices()
-                .updateContact(contact: updatedContact)
-            : await updateContactMock.updateContact(contact: updatedContact);
+        await (updateContactMock ?? UpdateContactServices())
+            .updateContact(contact: updatedContact);
       } catch (e) {
         error = 'Unable to update data. Please try again later';
         state = [];
@@ -68,7 +66,7 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
     }
   }
 
-  void onToggleDeleteContact(ContactInfo contact, int index) async {
+  Future<void> onToggleDeleteContact(ContactInfo contact, int index, {deleteContactMock}) async {
     final index = state.indexOf(contact);
     final updatedContacts = [...state];
     updatedContacts.remove(contact);
@@ -77,7 +75,7 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
 
     if (contactList == null) {
       try {
-        final response = await deleteContact(contact: contact);
+        final response = await (deleteContactMock ?? DeleteContactServices()).deleteContact(contact: contact);
 
         if (response.statusCode >= 400) {
           final updatedContacts = [...state];
@@ -92,7 +90,7 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
     }
   }
 
-  void onAddNewContact(ContactInfo contact) async {
+  Future<void> onAddNewContact(ContactInfo contact) async {
     final updated = [...state, contact];
     state = _sortContacts(updated);
     error = '';
@@ -112,7 +110,7 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
     }
   }
 
-  void onEditContact(ContactInfo contact, {onEditContactMock}) async {
+  Future<void> onEditContact(ContactInfo contact, {onEditContactMock}) async {
     state = state.map((list) {
       if (list.id == contact.id) {
         return contact.copyWith(id: list.id);
@@ -122,10 +120,8 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
 
     if (contactList == null) {
       try {
-        // await UpdateContactServices().updateContact(contact: contact);
-        onEditContactMock == null
-            ? await UpdateContactServices().updateContact(contact: contact)
-            : await onEditContactMock.updateContact(contact: contact);
+        await (onEditContactMock ?? UpdateContactServices())
+            .updateContact(contact: contact);
       } catch (e) {
         state = [];
         isLoading = false;

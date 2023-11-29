@@ -1,50 +1,47 @@
 import 'package:contact_list/model/contacts.dart';
 import 'package:contact_list/model/number.dart';
 import 'package:contact_list/providers/contact_list_provider.dart';
-import 'package:contact_list/services/fetch_contact.dart';
 import 'package:contact_list/services/update_contact.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 
 class MockUpdateContactService extends Mock implements UpdateContactServices {
-  var response = http.Response(
-      '{"emergencyContact":false,"firstName":"Name","lastName":"","notes":"","number":[{"contactNum":"234342423","numType":"Phone"},{"contactNum":"4345","numType":"Phone"}]}',
-      200,
-      headers: {'content-type': 'application/json'});
-  
-
   @override
   Future<http.Response> updateContact(
       {http.Client? client, required ContactInfo contact}) async {
-    return response;
-  }
-
-  void setResponse(newResponse) {
-    response = newResponse;
+    throw Exception();
   }
 }
 
 void main() {
-  test('loadItems should update state with fetched contacts', () async {
+  test('Error response will update the state for error', () async {
     final mockService = MockUpdateContactService();
     final testProvider = ContactListNotifier();
-
-    await testProvider.loadItems(fetchContact: mockService);
-    expect(testProvider.state.length, 1);
+    await testProvider.onEditContact(
+        ContactInfo(
+          firstName: 'First',
+          contactNumber: [NumberList(NumberTypes.Custom, '12122132')],
+        ),
+        onEditContactMock: mockService);
+    expect(testProvider.state, []);
     expect(testProvider.isLoading, false);
-    expect(testProvider.error, '');
+    expect(testProvider.error, 'Something went wrong please try again later. ');
   });
 
-  test('loadItems should update state with empty contacts', () async {
+  test(
+      'Error response will update the state for error when toggling to emergency contacts',
+      () async {
     final mockService = MockUpdateContactService();
     final testProvider = ContactListNotifier();
-
-    mockService.setResponse([]);
-    await testProvider.loadItems(fetchContact: mockService);
-    expect(testProvider.state.length, 0);
+    await testProvider.onToggleEmergencyContact(
+        ContactInfo(
+          firstName: 'First',
+          contactNumber: [NumberList(NumberTypes.Custom, '12122132')],
+        ),
+        updateContactMock: mockService);
+    expect(testProvider.state, []);
     expect(testProvider.isLoading, false);
-    expect(testProvider.error, '');
+    expect(testProvider.error, 'Unable to update data. Please try again later');
   });
 }
