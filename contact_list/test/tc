@@ -12,3 +12,14 @@ To Do scenarios
 
 
 * for integration tesing
+* smoke testing
+- Should be able to create new contact
+- Should be able to Edit new contact
+- Should be able to delete new contact (Emergency and Contact List)
+- Should be able to set contact to emergency contact (Emergency and Contact List and Contact Details page)
+- Should be able to search a contact (Emergency and Contact List)
+- Should be able to view the contact details of a contact
+- Should be able to call (single and multiple contact number)
+- Should be able to update contact photo
+
+-
