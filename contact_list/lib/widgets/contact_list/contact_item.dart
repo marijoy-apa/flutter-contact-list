@@ -47,7 +47,7 @@ class ContactItem extends ConsumerWidget {
               BorderSide(color: Theme.of(context).iconTheme.color!, width: 0.3),
         ),
         title: Text(
-          fullName.length<20 ? fullName : fullName.substring(0, 22),
+          fullName.length<20 ? fullName : fullName.substring(0, 20),
           style: Theme.of(context).textTheme.titleMedium!.copyWith(
               fontWeight: FontWeight.normal,
               color: Theme.of(context).iconTheme.color!.withOpacity(0.9)),
@@ -74,7 +74,7 @@ class ContactItem extends ConsumerWidget {
                 onPressed: () {
                   ref
                       .read(contactListProvider.notifier)
-                      .onToggleDeleteContact(contactItem, index);
+                      .onToggleDeleteContact(contactItem);
                 },
                 icon: const Icon(Icons.delete_outline),
               )

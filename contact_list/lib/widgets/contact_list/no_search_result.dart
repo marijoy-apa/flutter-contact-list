@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 
-Widget noSearchResult(String searchItem, BuildContext context) => Expanded(
+class NoSearchResult extends StatelessWidget {
+  const NoSearchResult({super.key, required this.searchItem});
+
+  final String searchItem;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -35,3 +42,5 @@ Widget noSearchResult(String searchItem, BuildContext context) => Expanded(
         ),
       ),
     );
+  }
+}

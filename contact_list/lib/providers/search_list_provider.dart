@@ -3,8 +3,9 @@ import 'package:contact_list/providers/contact_list_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SearchUserController extends StateNotifier<String> {
-  SearchUserController() : super('');
+  SearchUserController({this.searchString}) : super(searchString ?? '');
 
+  final String? searchString;
   void onSearchUser(String query) {
     state = query;
   }

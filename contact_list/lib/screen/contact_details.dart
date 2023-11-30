@@ -15,6 +15,8 @@ class ContactDetailsScreen extends ConsumerWidget {
   final ContactInfo contactItem;
 
   onClickEdit(BuildContext context, ContactInfo contact) {
+    print('HALLLLLLOOOOOO');
+    print(contactItem.imageFile);
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => EditContactScreen(contactItem: contact),
@@ -32,8 +34,7 @@ class ContactDetailsScreen extends ConsumerWidget {
           .where((list) => list.id == contactItem.id)
           .toList()[0];
     } catch (e) {
-      // Navigator.of(context).pop();
-      print('error 2 here');
+      
     }
 
     String fullName = contactItem.firstName;

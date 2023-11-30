@@ -33,7 +33,7 @@ void main() {
       ];
       createNewContactScreen.numTypeSelected = [
         NumberTypes.Phone,
-        NumberTypes.Pager, 
+        NumberTypes.Pager,
         NumberTypes.Other
       ];
       List<NumberList> invalidNumberList =
@@ -41,7 +41,7 @@ void main() {
       expect(invalidNumberList.length, 0);
     });
 
-        test('Test with valid & invalid input', () {
+    test('Test with valid & invalid input', () {
       createNewContactScreen.phoneController = [
         TextEditingController(text: 'abc123'),
         TextEditingController(text: '1231232'),
@@ -49,7 +49,7 @@ void main() {
       ];
       createNewContactScreen.numTypeSelected = [
         NumberTypes.Phone,
-        NumberTypes.Pager, 
+        NumberTypes.Pager,
         NumberTypes.Other
       ];
       List<NumberList> invalidNumberList =
