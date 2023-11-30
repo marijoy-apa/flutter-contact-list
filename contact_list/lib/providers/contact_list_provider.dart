@@ -66,7 +66,8 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
     }
   }
 
-  Future<void> onToggleDeleteContact(ContactInfo contact, int index, {deleteContactMock}) async {
+  Future<void> onToggleDeleteContact(ContactInfo contact,
+      {deleteContactMock}) async {
     final index = state.indexOf(contact);
     final updatedContacts = [...state];
     updatedContacts.remove(contact);
@@ -75,9 +76,10 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
 
     if (contactList == null) {
       try {
-        final response = await (deleteContactMock ?? DeleteContactServices()).deleteContact(contact: contact);
+        final response = await (deleteContactMock ?? DeleteContactServices())
+            .deleteContact(contact: contact);
 
-        if (response.statusCode >= 400) {
+        if (response.statusCode != 200) {
           final updatedContacts = [...state];
           updatedContacts.insert(index, contact);
           state = updatedContacts;
@@ -90,13 +92,14 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
     }
   }
 
-  Future<void> onAddNewContact(ContactInfo contact) async {
+  Future<void> onAddNewContact(ContactInfo contact, {mockAddNewContact}) async {
     final updated = [...state, contact];
     state = _sortContacts(updated);
     error = '';
 
     try {
-      final response = await addContacts(contact: contact);
+      final response = await (mockAddNewContact ?? AddContactServices())
+          .addContacts(contact: contact);
       if (response.statusCode != 200) {
         state = [];
         isLoading = false;
@@ -106,7 +109,7 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
     } catch (e) {
       state = [];
       isLoading = false;
-      error = 'Something went wrong please try again later. ';
+      error = 'Something went wrong please try again later.';
     }
   }
 

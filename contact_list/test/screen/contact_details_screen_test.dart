@@ -1,5 +1,6 @@
 import 'package:contact_list/model/contacts.dart';
 import 'package:contact_list/providers/contact_list_provider.dart';
+import 'package:contact_list/screen/contact_details.dart';
 import 'package:contact_list/screen/contact_list.dart';
 import 'package:contact_list/screen/edit_contact.dart';
 import 'package:contact_list/screen/tabs.dart';
@@ -102,6 +103,35 @@ void main() {
       await setup(tester, [emergencyContact]);
       await ensureTap(tester, find.text('Contacts'));
       expect(find.byType(ContactList), findsOneWidget);
+    });
+
+    testWidgets(
+        'Verify error message when there are error on setting emergency contact',
+        (WidgetTester tester) async {
+      //provide mock data for contactList and error Message
+      final mockContactListNotifier =
+          ContactListNotifier(contactList: [contactDetails])
+            ..error = 'Unable to update data. Please try again later';
+
+      //pump widget given the overriden values for the provider
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            home: ContactDetailsScreen(
+              contactItem: contactDetails,
+            ),
+          ),
+          overrides: [
+            contactListProvider.overrideWith((ref) => mockContactListNotifier),
+          ],
+        ),
+      );
+      await tester.pump();
+      await ensureTap(tester, find.text('Add to emergency contacts'));
+      expect(
+          find.widgetWithText(
+              SnackBar, 'Unable to update data. Please try again later'),
+          findsOneWidget);
     });
   });
 }

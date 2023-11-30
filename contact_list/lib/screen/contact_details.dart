@@ -15,6 +15,8 @@ class ContactDetailsScreen extends ConsumerWidget {
   final ContactInfo contactItem;
 
   onClickEdit(BuildContext context, ContactInfo contact) {
+    print('HALLLLLLOOOOOO');
+    print(contactItem.imageFile);
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => EditContactScreen(contactItem: contact),

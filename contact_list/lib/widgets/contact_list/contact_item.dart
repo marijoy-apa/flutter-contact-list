@@ -74,7 +74,7 @@ class ContactItem extends ConsumerWidget {
                 onPressed: () {
                   ref
                       .read(contactListProvider.notifier)
-                      .onToggleDeleteContact(contactItem, index);
+                      .onToggleDeleteContact(contactItem);
                 },
                 icon: const Icon(Icons.delete_outline),
               )

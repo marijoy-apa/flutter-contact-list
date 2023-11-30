@@ -15,7 +15,7 @@ class MockUpdateContactService extends Mock implements UpdateContactServices {
 }
 
 void main() {
-  test('Error response will update the state for error', () async {
+  test('Error response will update the state for error upon updating list', () async {
     final mockService = MockUpdateContactService();
     final testProvider = ContactListNotifier();
     await testProvider.onEditContact(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../test_data/contact_details.dart';
 import '../test_data/contact_list.dart';
 import '../test_data/emergency_list.dart';
 
@@ -88,7 +89,31 @@ void main() {
         expect(find.textContaining(contact.firstName), findsAtLeastNWidgets(1));
         expect(find.textContaining(contact.firstName), findsAtLeastNWidgets(1));
       }
-      // }
+    });
+
+    testWidgets(
+        'Verify Error message when there are error upon loading the items',
+        (WidgetTester tester) async {
+      final mockContactListNotifier =
+          ContactListNotifier(contactList: [contactDetails])
+            ..error = 'Something went wrong. Please try again later.';
+      await tester.pumpWidget(TestWidget(mockContactListNotifier));
+      await ensureTap(tester, find.text('Emergency List'));
+
+      expect(find.text('Something went wrong. Please try again later.'),
+          findsOneWidget);
+    });
+
+    testWidgets('Verify loading modal when items are still loading',
+        (WidgetTester tester) async {
+      final mockContactListNotifier =
+          ContactListNotifier(contactList: [contactDetails])
+            ..error = ''
+            ..isLoading = true;
+      await tester.pumpWidget(TestWidget(mockContactListNotifier));
+      await tester.tap(find.text('Emergency List'));
+      await tester.pump();
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
   });
 }

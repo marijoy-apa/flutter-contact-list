@@ -175,6 +175,41 @@ void main() {
       await ensureTap(tester, find.text('Save'));
       expect(find.text('Save'), findsNothing);
     });
+
+    testWidgets(
+        'Error message display when there are error on saving updated contact details',
+        (WidgetTester tester) async {
+
+      //provide mock data for contactList and error Message
+      final mockContactListNotifier =
+          ContactListNotifier(contactList: [contactDetails])
+            ..error = 'Unable to update data. Please try again later';
+
+      //pump widget given the overriden values for the provider
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            home: EditContactScreen(
+              contactItem: contactDetails,
+            ),
+          ),
+          overrides: [
+            contactListProvider.overrideWith((ref) => mockContactListNotifier),
+          ],
+        ),
+      );
+      await tester.enterText(firstNameTextField, 'John');
+      await tester.enterText(phoneTextField, '0909090909');
+      await tester.pumpAndSettle();
+      await ensureTap(tester, find.text('Save'));
+
+      expect(
+          find.widgetWithText(
+              SnackBar, 'Unable to update data. Please try again later'),
+          findsOneWidget);
+      expect(find.text('Save'), findsOneWidget);
+    });
+
   });
 
   group('Correct rendering of data in the fields', () {
