@@ -93,13 +93,13 @@ void main() {
     });
   });
 
-  group('Create New Contact Feature', () {
+  group('Edit new contact feature', () {
     testWidgets('Able to save modified contact details',
         (WidgetTester tester) async {
-      // await tester.pump();
+      await setup(tester);
 
       expect(find.text('Save'), findsOneWidget);
-      await tester.enterText(createContactFinder.firstNameTextField, 'John');
+      await tester.enterText(createContactFinder.firstNameTextField, 'New John');
       await tester.enterText(createContactFinder.phoneTextField, '0909090909');
       await tester.pumpAndSettle();
       await ensureTap(tester, find.text('Save'));
