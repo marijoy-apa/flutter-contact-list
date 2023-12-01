@@ -1,3 +1,4 @@
+import 'package:contact_list/screen/create_contact.dart';
 import 'package:contact_list/screen/tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,14 +9,10 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         child: MaterialApp(
-          home: ContactsScreen(),
+          home: CreateNewContactScreen(),
         ),
       ),
     );
-    await tester.pump();
-
-    final addButton = find.byType(FloatingActionButton);
-    await tester.tap(addButton);
     await tester.pump();
   }
 
@@ -158,14 +155,14 @@ void main() {
       'Select Number Type dialog pops up when clicking the Number dropdown',
       (WidgetTester tester) async {
     await setup(tester);
-    await ensureTap(tester, find.byKey(Key('numType-dropdown-button')));
+    await ensureTap(tester, find.byKey(Key('numType-dropdown-button0')));
     expect(find.byType(Dialog), findsOneWidget);
   });
 
   testWidgets('Should be able to change the num type',
       (WidgetTester tester) async {
     await setup(tester);
-    await ensureTap(tester, find.byKey(Key('numType-dropdown-button')));
+    await ensureTap(tester, find.byKey(Key('numType-dropdown-button0')));
     await ensureTap(tester, find.text('Fax'));
 
     expect(find.text('Fax'), findsNWidgets(2));
