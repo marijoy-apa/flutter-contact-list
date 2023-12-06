@@ -88,7 +88,7 @@ class Common {
     List contactItems = find.byType(ListTile).evaluate().toList();
 
     if (contactItems.length != 0) {
-      for (var contact in contactItems) {
+      for (var i = 0; i < contactItems.length; i++) {
         await ensureTap(tester, find.byIcon(Icons.emergency).first);
       }
     }
@@ -98,7 +98,7 @@ class Common {
     List contactItems = find.byType(ListTile).evaluate().toList();
 
     if (contactItems.length != 0) {
-      for (var contact in contactItems) {
+      for (var i = 0; i < contactItems.length; i++) {
         await tester.pump(Duration(seconds: 1));
         await ensureTap(tester, find.byIcon(Icons.delete_outline).first);
       }
