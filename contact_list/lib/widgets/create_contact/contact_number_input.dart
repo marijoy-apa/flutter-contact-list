@@ -35,6 +35,7 @@ Widget inputContactNumber({
                 SizedBox(
                   width: 51,
                   child: Text(
+                    key: Key('numType-$index'),
                     numTypeSelected,
                     style: TextStyle(
                       color: Theme.of(context).iconTheme.color,
@@ -92,6 +93,7 @@ Widget inputContactNumber({
         ),
         Expanded(
           child: inputTextField(
+            inputKey: Key('numType-textField$index'),
             context: context,
             validateForm: validateForm,
             controller: phoneController[index],

@@ -51,7 +51,7 @@ void main() {
   group('Edit Contact page fields validation', () {
     testWidgets('Edit Contact fields properly displayed',
         (WidgetTester tester) async {
-      await setup(tester, contactDetails);
+      await setup(tester, editDetails);
 
       //text & text button
       expect(find.widgetWithText(TextButton, 'Cancel'), findsOneWidget);

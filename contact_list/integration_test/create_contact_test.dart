@@ -13,12 +13,6 @@ final common = Common();
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  Future<void> ensureTap(WidgetTester tester, Finder finder) async {
-    tester.ensureVisible(finder);
-    await tester.pumpAndSettle();
-    await tester.tap(finder);
-    await tester.pumpAndSettle();
-  }
 
   Future<void> setup(WidgetTester tester) async {
     app.main();
@@ -49,14 +43,14 @@ void main() {
     testWidgets('Clicking Add Phone will add phone fields',
         (WidgetTester tester) async {
       await setup(tester);
-      await ensureTap(tester, createContactFinder.addPhoneButton);
+      await common.ensureTap(tester, createContactFinder.addPhoneButton);
       expect(createContactFinder.phoneTextField, findsNWidgets(2));
     });
 
     testWidgets('Toggle Add/Remove to emergency contacts ',
         (WidgetTester tester) async {
       await setup(tester);
-      await ensureTap(tester, createContactFinder.addEmergencyContact);
+      await common.ensureTap(tester, createContactFinder.addEmergencyContact);
 
       expect(createContactFinder.removeEmergencyContact, findsOneWidget);
       expect(createContactFinder.addEmergencyContact, findsNothing);
@@ -70,7 +64,7 @@ void main() {
     testWidgets('Clicking Cancel button will remove the Create Contacts page',
         (WidgetTester tester) async {
       await setup(tester);
-      await ensureTap(tester, createContactFinder.cancelButton);
+      await common.ensureTap(tester, createContactFinder.cancelButton);
       expect(find.byWidget(ContactsScreen()), findsNothing);
     });
 
@@ -78,15 +72,17 @@ void main() {
         'Select Number Type dialog pops up when clicking the Number dropdown',
         (WidgetTester tester) async {
       await setup(tester);
-      await ensureTap(tester, find.byKey(Key('numType-dropdown-button0')));
+      await common.ensureTap(
+          tester, find.byKey(Key('numType-dropdown-button0')));
       expect(find.byType(Dialog), findsOneWidget);
     });
 
     testWidgets('Should be able to change the num type',
         (WidgetTester tester) async {
       await setup(tester);
-      await ensureTap(tester, find.byKey(Key('numType-dropdown-button0')));
-      await ensureTap(tester, find.text('Fax'));
+      await common.ensureTap(
+          tester, find.byKey(Key('numType-dropdown-button0')));
+      await common.ensureTap(tester, find.text('Fax'));
 
       expect(find.text('Fax'), findsNWidgets(2));
     });
@@ -96,20 +92,21 @@ void main() {
     testWidgets('Should be able to create new contact with complete details',
         (tester) async {
       await setup(tester);
-      await ensureTap(tester, createContactFinder.addEmergencyContact);
+      await common.ensureTap(tester, createContactFinder.addEmergencyContact);
 
       await tester.enterText(createContactFinder.firstNameTextField, 'John');
       await tester.enterText(createContactFinder.lastNameTextField, 'Napoleon');
 
       //num type dropdown
-      await ensureTap(tester, find.byKey(Key('numType-dropdown-button0')));
-      await ensureTap(tester, find.text('Fax'));
+      await common.ensureTap(
+          tester, find.byKey(Key('numType-dropdown-button0')));
+      await common.ensureTap(tester, find.text('Fax'));
       expect(find.text('Fax'), findsNWidgets(2));
       await tester.enterText(
           find.widgetWithText(TextField, 'Fax'), '0909090909');
 
       //to input two numbers
-      await ensureTap(tester, createContactFinder.addPhoneButton);
+      await common.ensureTap(tester, createContactFinder.addPhoneButton);
       await tester.enterText(
           find.widgetWithText(TextField, 'Phone'), '1912345678');
 
@@ -120,39 +117,22 @@ void main() {
       Text buttonWidget = tester.widget(find.text('Done'));
       expect(buttonWidget.style!.color, Colors.blue);
 
-      await ensureTap(tester, createContactFinder.doneButton);
-      await ensureTap(tester, find.text('John Napoleon').first);
+      await common.ensureTap(tester, createContactFinder.doneButton);
+      await common.ensureTap(tester, find.text('John Napoleon').first);
       common.validateCorrectContactDetails(testData.fullDetailsContactInfo);
     });
 
-    //will remove temporarily because of the error on state when loading data from database
-
-    // testWidgets(
-    //     'Should be able to create new contact with First Name and Phone number input',
-    //     (tester) async {
-    //   await setup(tester);
-    //   await tester.enterText(createContactFinder.firstNameTextField, 'John');
-    //   await tester.enterText(createContactFinder.phoneTextField, '0909090909');
-    //   await tester.pump();
-    //   Text buttonWidget = tester.widget(find.text('Done'));
-    //   expect(buttonWidget.style!.color, Colors.blue);
-
-    //   await ensureTap(tester, createContactFinder.doneButton);
-    //   expect(find.byWidget(ContactsScreen()), findsNothing);
-    // });
-
-    // testWidgets(
-    //     'Should be able to create new contact with First Name and Phone number input wrwer',
-    //     (tester) async {
-    //   await setup(tester);
-    //   await tester.enterText(createContactFinder.firstNameTextField, 'John');
-    //   await tester.enterText(createContactFinder.phoneTextField, '0909090909');
-    //   await tester.pump();
-    //   Text buttonWidget = tester.widget(find.text('Done'));
-    //   expect(buttonWidget.style!.color, Colors.blue);
-
-    //   await ensureTap(tester, createContactFinder.doneButton);
-    //   expect(find.byWidget(ContactsScreen()), findsNothing);
-    // });
+    testWidgets(
+        'Should be able to create new contact with First Name and Phone number input only',
+        (tester) async {
+      await setup(tester);
+      await tester.enterText(createContactFinder.firstNameTextField, 'John');
+      await tester.enterText(createContactFinder.phoneTextField, '0909090909');
+      await tester.pump();
+      Text buttonWidget = tester.widget(find.text('Done'));
+      expect(buttonWidget.style!.color, Colors.blue);
+      await common.ensureTap(tester, createContactFinder.doneButton);
+      expect(find.byWidget(ContactsScreen()), findsNothing);
+    });
   });
 }

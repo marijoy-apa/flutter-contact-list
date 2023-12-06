@@ -13,19 +13,12 @@ final common = Common();
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  Future<void> ensureTap(WidgetTester tester, Finder finder) async {
-    tester.ensureVisible(finder);
-    await tester.pumpAndSettle();
-    await tester.tap(finder);
-    await tester.pumpAndSettle();
-  }
 
   Future<void> setup(WidgetTester tester) async {
     app.main();
     await tester.pumpAndSettle();
-    await ensureTap(
-        tester, find.textContaining('John Napoleon'));
-    await ensureTap(tester, find.text('Edit'));
+    await common.ensureTap(tester, find.textContaining('John Napoleon').first);
+    await common.ensureTap(tester, find.text('Edit'));
   }
 
   group('Create New Contact page validation', () {
@@ -33,31 +26,31 @@ void main() {
       await setup(tester);
 
       //text & text button
-      // expect(find.widgetWithText(TextButton, 'Cancel'), findsOneWidget);
-      // expect(find.widgetWithText(TextButton, 'Save'), findsOneWidget);
-      // expect(find.text('Add photo'), findsOneWidget);
-      // expect(createContactFinder.removeEmergencyContact, findsOneWidget);
-      // expect(createContactFinder.addPhoneButton, findsOneWidget);
-      // expect(find.text('Notes'), findsOneWidget);
+      expect(find.widgetWithText(TextButton, 'Cancel'), findsOneWidget);
+      expect(find.widgetWithText(TextButton, 'Save'), findsOneWidget);
+      expect(find.text('Add photo'), findsOneWidget);
+      expect(createContactFinder.removeEmergencyContact, findsOneWidget);
+      expect(createContactFinder.addPhoneButton, findsOneWidget);
+      expect(find.text('Notes'), findsOneWidget);
 
-      // //textFields
-      // expect(find.widgetWithText(TextField, 'First Name'), findsOneWidget);
-      // expect(find.widgetWithText(TextField, 'Last Name'), findsOneWidget);
-      // expect(createContactFinder.phoneTextField, findsOneWidget);
+      //textFields
+      expect(find.widgetWithText(TextField, 'First Name'), findsOneWidget);
+      expect(find.widgetWithText(TextField, 'Last Name'), findsOneWidget);
+      expect(createContactFinder.phoneTextField, findsOneWidget);
     });
 
     testWidgets('Clicking Add Phone will add phone fields',
         (WidgetTester tester) async {
       await setup(tester);
-      await ensureTap(tester, createContactFinder.addPhoneButton);
+      await common.ensureTap(tester, createContactFinder.addPhoneButton);
       expect(createContactFinder.phoneTextField, findsNWidgets(2));
     });
 
     testWidgets('Toggle Add/Remove to emergency contacts ',
         (WidgetTester tester) async {
       await setup(tester);
-      // await ensureTap(tester, createContactFinder.addEmergencyContact);
-      await ensureTap(tester, createContactFinder.removeEmergencyContact);
+      await common.ensureTap(
+          tester, createContactFinder.removeEmergencyContact);
 
       expect(createContactFinder.addEmergencyContact, findsOneWidget);
       expect(createContactFinder.removeEmergencyContact, findsNothing);
@@ -71,7 +64,7 @@ void main() {
     testWidgets('Clicking Cancel button will remove the Create Contacts page',
         (WidgetTester tester) async {
       await setup(tester);
-      await ensureTap(tester, createContactFinder.cancelButton);
+      await common.ensureTap(tester, createContactFinder.cancelButton);
       expect(find.byWidget(ContactsScreen()), findsNothing);
     });
 
@@ -79,63 +72,34 @@ void main() {
         'Select Number Type dialog pops up when clicking the Number dropdown',
         (WidgetTester tester) async {
       await setup(tester);
-      await ensureTap(tester, find.byKey(Key('numType-dropdown-button0')));
+      await common.ensureTap(
+          tester, find.byKey(Key('numType-dropdown-button0')));
       expect(find.byType(Dialog), findsOneWidget);
     });
 
     testWidgets('Should be able to change the num type',
         (WidgetTester tester) async {
       await setup(tester);
-      await ensureTap(tester, find.byKey(Key('numType-dropdown-button0')));
-      await ensureTap(tester, find.text('Custom'));
+      await common.ensureTap(
+          tester, find.byKey(Key('numType-dropdown-button0')));
+      await common.ensureTap(tester, find.text('Custom'));
 
       expect(find.text('Custom'), findsNWidgets(2));
     });
   });
 
   group('Edit new contact feature', () {
-    testWidgets('Able to save modified contact details',
+    testWidgets('Should be able to save modified contact details',
         (WidgetTester tester) async {
       await setup(tester);
 
       expect(find.text('Save'), findsOneWidget);
-      await tester.enterText(createContactFinder.firstNameTextField, 'New John');
+      await tester.enterText(
+          createContactFinder.firstNameTextField, 'New John');
       await tester.enterText(createContactFinder.phoneTextField, '0909090909');
       await tester.pumpAndSettle();
-      await ensureTap(tester, find.text('Save'));
+      await common.ensureTap(tester, find.text('Save'));
       expect(find.text('Save'), findsNothing);
     });
-
-    // testWidgets('Should be able to create new contact with complete details',
-    //     (tester) async {
-    //   await setup(tester);
-    //   await ensureTap(tester, createContactFinder.addEmergencyContact);
-
-    //   await tester.enterText(createContactFinder.firstNameTextField, 'John');
-    //   await tester.enterText(createContactFinder.lastNameTextField, 'Napoleon');
-
-    //   //num type dropdown
-    //   await ensureTap(tester, find.byKey(Key('numType-dropdown-button0')));
-    //   await ensureTap(tester, find.text('Fax'));
-    //   expect(find.text('Fax'), findsNWidgets(2));
-    //   await tester.enterText(
-    //       find.widgetWithText(TextField, 'Fax'), '0909090909');
-
-    //   //to input two numbers
-    //   await ensureTap(tester, createContactFinder.addPhoneButton);
-    //   await tester.enterText(
-    //       find.widgetWithText(TextField, 'Phone'), '1912345678');
-
-    //   await tester.enterText(createContactFinder.notesTextField,
-    //       'This is a test note. Please ignore.');
-
-    //   await tester.pump();
-    //   Text buttonWidget = tester.widget(find.text('Done'));
-    //   expect(buttonWidget.style!.color, Colors.blue);
-
-    //   await ensureTap(tester, createContactFinder.doneButton);
-    //   await ensureTap(tester, find.text('John Napoleon').first);
-    //   common.validateCorrectContactDetails(testData.fullDetailsContactInfo);
-    // });
   });
 }
