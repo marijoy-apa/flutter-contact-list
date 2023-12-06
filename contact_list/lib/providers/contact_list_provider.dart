@@ -59,9 +59,11 @@ class ContactListNotifier extends StateNotifier<List<ContactInfo>> {
         isLoading = false;
         error = '';
       } catch (e) {
-        error = 'Something went wrong. Please try again later.';
-        isLoading = false;
-        state = [];
+        if (mounted) {
+          error = 'Something went wrong. Please try again later.';
+          isLoading = false;
+          state = [];
+        }
       }
     }
   }

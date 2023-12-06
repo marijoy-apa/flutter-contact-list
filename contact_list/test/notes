@@ -1,0 +1,34 @@
+To Do scenarios
+- integrate http request - DONE
+- to create unit test for edit * list  - DONE
+- unit test for edit on details page - DONE
+- enable and disable of Done button  - DONE
+- widget test for error message (can be converted to unit test) - DONE
+
+
+* improve unit test structure
+* add helper methods (ensureTap method) - DONE in integration testing
+* Should be able to pick an image - to check this scenario
+
+
+* for integration tesing
+* smoke testing
+- Should be able to create new contact DONE
+- Should be able to update a contact DONE
+- Should be able to delete new contact (Emergency and Contact List)
+- Should be able to set contact to emergency contact (Emergency and Contact List and Contact Details page)
+- Should be able to search a contact (Emergency and Contact List)
+- Should be able to view the contact details of a contact
+- Should be able to call (single and multiple contact number)
+- Should be able to update contact photo
+
+* Subject for improvement
+- update setup for create_contact_screen widget testing to pump the createScreen itself (no more navigation, tap) - DONE
+- add test scenario when emergency contact and contact list is empty - DONE
+- look for ways to have integration testing for camera and phone call
+
+
+*** 
+flutter test --coverage
+flutter test integration_test
+

@@ -85,7 +85,6 @@ void main() {
       Icon widgetIcon = getEmergencyIcons(tester)[0] as Icon;
 
       expect(widgetIcon.icon, Icons.emergency);
-      // }
     });
 
     testWidgets('Verify emergency icon changes when removing the emergency',
@@ -106,7 +105,6 @@ void main() {
         expect(find.textContaining(contact.firstName), findsAtLeastNWidgets(1));
         expect(find.textContaining(contact.firstName), findsAtLeastNWidgets(1));
       }
-      // }
     });
   });
 }

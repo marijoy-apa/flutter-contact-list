@@ -7,7 +7,8 @@ Widget inputTextField(
     required BuildContext context,
     required Function(String value) validateForm,
     String? Function(String? value)? validator,
-    bool border = false}) {
+    bool border = false,
+    Key? inputKey}) {
   return Container(
     decoration: BoxDecoration(
         border: Border(
@@ -16,6 +17,7 @@ Widget inputTextField(
                     width: 0.3, color: Theme.of(context).iconTheme.color!)
                 : BorderSide.none)),
     child: TextFormField(
+        key: inputKey,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: validator,
         onChanged: validateForm,
@@ -33,7 +35,10 @@ Widget inputTextField(
 InputDecoration textFieldInputDecoration(
         String text, BuildContext context, bool border) =>
     InputDecoration(
-      errorStyle:  const TextStyle(fontSize: 9, height: 0, ),
+      errorStyle: const TextStyle(
+        fontSize: 9,
+        height: 0,
+      ),
       border: const OutlineInputBorder(
         borderRadius: BorderRadius.vertical(top: Radius.zero),
         borderSide: BorderSide.none,
