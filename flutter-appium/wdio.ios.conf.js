@@ -1,3 +1,5 @@
+const path = require('path');
+
 exports.config = {
     //
     // ====================
@@ -56,9 +58,11 @@ exports.config = {
         // capabilities for local Appium web tests on an Android Emulator
         platformName: 'iOS',
         'appium:deviceName': 'iPhone 14 Pro',
-        'appium:platformVersion': '12.0',
+        'appium:platformVersion': '16.4',
         'appium:automationName': 'Flutter',
         'appium:app': 'build/ios/iphonesimulator/Runner.app',
+        'appium:app': path.join(__dirname, '..', 'contact_list', 'build', 'ios', 'iphonesimulator', 'Runner.app'),
+
         'appium:Reset': false,
     }],
 
