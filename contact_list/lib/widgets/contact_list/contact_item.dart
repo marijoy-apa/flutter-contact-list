@@ -40,6 +40,7 @@ class ContactItem extends ConsumerWidget {
       alignment: Alignment.topLeft,
       height: 50,
       child: ListTile(
+        key: ValueKey('listItem'),
         contentPadding: const EdgeInsets.only(right: 0),
         onTap: () => navigateToContactDetails(context),
         shape: Border(
@@ -47,7 +48,7 @@ class ContactItem extends ConsumerWidget {
               BorderSide(color: Theme.of(context).iconTheme.color!, width: 0.3),
         ),
         title: Text(
-          fullName.length<20 ? fullName : fullName.substring(0, 20),
+          fullName.length < 20 ? fullName : fullName.substring(0, 20),
           style: Theme.of(context).textTheme.titleMedium!.copyWith(
               fontWeight: FontWeight.normal,
               color: Theme.of(context).iconTheme.color!.withOpacity(0.9)),
@@ -58,6 +59,7 @@ class ContactItem extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               IconButton(
+                key: ValueKey('emergencyBtn'),
                 onPressed: () {
                   ref
                       .read(contactListProvider.notifier)
@@ -71,6 +73,7 @@ class ContactItem extends ConsumerWidget {
                 ),
               ),
               IconButton(
+                key: ValueKey('deleteBtn'),
                 onPressed: () {
                   ref
                       .read(contactListProvider.notifier)
