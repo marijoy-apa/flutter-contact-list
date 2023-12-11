@@ -12,8 +12,6 @@ describe('Create new contact', () => {
         assert.strictEqual(await driver.getElementText(find.byText('Emergency List')), 'Emergency List');
         await driver.elementClick(addButton);
 
-        await driver.getElement
-
         //click 'Add to emergency contacts'
         await driver.elementClick(find.byText('Add to emergency contacts'));
         driver.executeScript("flutter:waitFor", find.byText('Remove from emergency contacts'));
