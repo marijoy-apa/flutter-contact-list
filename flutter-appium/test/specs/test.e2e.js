@@ -5,11 +5,14 @@ const assert = require('assert');
 const { timeout } = require('async');
 
 describe('Create new contact', () => {
+
     it('Verify Add to emergency contacts is clickable', async () => {
 
         const addButton = find.byType('FloatingActionButton');
         assert.strictEqual(await driver.getElementText(find.byText('Emergency List')), 'Emergency List');
         await driver.elementClick(addButton);
+
+        await driver.getElement
 
         //click 'Add to emergency contacts'
         await driver.elementClick(find.byText('Add to emergency contacts'));
@@ -80,8 +83,7 @@ describe('Contact Details page', () => {
     });
 
     it('i should be able to make phone calls when Call is clicked', async () => {
-        await driver.elementClick(find.byText('Call'));
+        await driver.elementClick(find.byText('Call'))
 
-  
     });
 })

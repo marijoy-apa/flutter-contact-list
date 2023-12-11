@@ -61,8 +61,7 @@ exports.config = {
         'appium:platformVersion': '16.4',
         'appium:automationName': 'Flutter',
         'appium:app': 'build/ios/iphonesimulator/Runner.app',
-        'appium:app': path.join(__dirname, '..', 'contact_list', 'build', 'ios', 'iphonesimulator', 'Runner.app'),
-
+        'appium:app': 'build/Runner.app',
         'appium:Reset': false,
     }],
 

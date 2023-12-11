@@ -1,5 +1,3 @@
-const path = require('path');
-
 exports.config = {
     //
     // ====================
@@ -60,7 +58,7 @@ exports.config = {
         platformName: 'Android',
         'appium:deviceName': 'emulator-5554',
         'appium:automationName': 'Flutter',
-        'appium:app': path.join(__dirname, '..', 'contact_list', 'build', 'app', 'outputs', 'flutter-apk', 'app-debug.apk'),
+        'appium:app': 'build/app-debug.apk',
     }],
 
     //
