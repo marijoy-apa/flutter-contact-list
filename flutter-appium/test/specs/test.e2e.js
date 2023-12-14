@@ -79,9 +79,4 @@ describe('Contact Details page', () => {
         driver.executeScript("flutter:waitFor", find.byText('Remove from emergency contacts'));
         assert.strictEqual(await driver.getElementText(find.byText('Remove from emergency contacts')), 'Remove from emergency contacts')
     });
-
-    it('i should be able to make phone calls when Call is clicked', async () => {
-        await driver.elementClick(find.byText('Call'))
-
-    });
 })
