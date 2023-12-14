@@ -70,6 +70,7 @@ class ContactItem extends ConsumerWidget {
                       ? Icons.emergency
                       : Icons.emergency_outlined,
                   color: isEmergencyContact ? Colors.red : null,
+                  semanticLabel: isEmergencyContact ? 'emergencyBtn-true' : 'emergencyBtn-false',
                 ),
               ),
               IconButton(
@@ -79,7 +80,10 @@ class ContactItem extends ConsumerWidget {
                       .read(contactListProvider.notifier)
                       .onToggleDeleteContact(contactItem);
                 },
-                icon: const Icon(Icons.delete_outline),
+                icon: const Icon(
+                  Icons.delete_outline,
+                  semanticLabel: 'deleteBtn',
+                ),
               )
             ],
           ),

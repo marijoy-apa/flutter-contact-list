@@ -49,6 +49,7 @@ Widget searchContainer({
                     Icons.cancel,
                     color: Theme.of(context).iconTheme.color,
                     size: 20,
+                    semanticLabel: 'clearBtn',
                   ),
                   padding: const EdgeInsets.only(right: 20),
                 )

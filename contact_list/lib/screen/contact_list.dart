@@ -100,12 +100,13 @@ class _ContactListState extends ConsumerState<ContactList> {
         ],
       ),
       floatingActionButton: error.isEmpty
-          ? FloatingActionButton(
+          ? FloatingActionButton(            
               onPressed: () {
                 _navigateToCreateContact(context);
               },
               shape: const CircleBorder(),
-              child: const Icon(Icons.add),
+              child: const Icon(Icons.add, semanticLabel: 'addContactBtn',),
+              
             )
           : null,
     );

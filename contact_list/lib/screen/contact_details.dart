@@ -32,9 +32,7 @@ class ContactDetailsScreen extends ConsumerWidget {
           .watch(contactListProvider)
           .where((list) => list.id == contactItem.id)
           .toList()[0];
-    } catch (e) {
-      
-    }
+    } catch (e) {}
 
     String fullName = contactItem.firstName;
     if (contactItem.lastName != null) {
@@ -79,8 +77,9 @@ class ContactDetailsScreen extends ConsumerWidget {
                 fullName,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    fontSize: 25,
-                    color: Theme.of(context).iconTheme.color!.withOpacity(0.7)),
+                  fontSize: 25,
+                  color: Theme.of(context).iconTheme.color!.withOpacity(0.7),
+                ),
               ),
               const SizedBox(height: 20),
               ActionIcons(

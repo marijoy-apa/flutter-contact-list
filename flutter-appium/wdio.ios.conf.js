@@ -59,7 +59,7 @@ exports.config = {
         platformName: 'iOS',
         'appium:deviceName': 'iPhone 14 Pro',
         'appium:platformVersion': '16.4',
-        'appium:automationName': 'Flutter',
+        'appium:automationName': 'XCUITest',
         'appium:app': 'build/ios/iphonesimulator/Runner.app',
         'appium:app': 'build/Runner.app',
         'appium:Reset': false,
