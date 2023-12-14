@@ -1,5 +1,16 @@
-const PO = require('../pageObjects/contactsPO');
 const assert = require('assert');
+let PO;
+let platform;
+let attribute;
+if (browser.capabilities['platformName'] === 'iOS') {
+    PO = require('../pageObjects/iosPO');
+    attribute = 'name';
+    platform = 'iOS';
+} else {
+    PO = require('../pageObjects/contactsPO');
+    attribute = 'content-desc';
+    platform = 'android';
+}
 
 
 class ContactsPage {
@@ -107,12 +118,14 @@ class ContactsPage {
 
     async createNewContact(firstName, isEmergency) {
         await this.clickOn(PO.createCntctBtn);
-        await this.setText(PO.firstNameTF, firstName);
-        await this.setText(PO.phoneTF, '32423423');
+
         if (isEmergency == true) {
             await driver.hideKeyboard();
             await this.clickOn(PO.addToEmergencyContacts);
         }
+        await this.setText(PO.firstNameTF, firstName);
+        await this.setText(PO.phoneTF, '32423423');
+
         await this.clickOn(PO.doneBtn);
     }
     async verifyText(xpath, text) {
