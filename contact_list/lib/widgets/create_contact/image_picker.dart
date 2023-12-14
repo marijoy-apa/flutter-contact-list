@@ -53,7 +53,7 @@ class _UserImagePickerState extends State<UserImagePicker> {
           radius: 64,
           backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           foregroundImage:
-              pickedImageFile != null ? FileImage(pickedImageFile!) : null,
+              pickedImageFile != null ? FileImage(pickedImageFile!,) : null,
         ),
         TextButton(
           onPressed: pickImage,

@@ -47,7 +47,7 @@ class _ContactListState extends ConsumerState<ContactList> {
     final searchItem = ref.watch(searchKeywordProvider);
     final isLoading = ref.watch(contactListProvider.notifier).isLoading;
     final error = ref.watch(contactListProvider.notifier).error;
-    
+
     searchKeyword.text = searchItem;
 
     Widget content = noListAdded('Contacts', context);
@@ -57,7 +57,9 @@ class _ContactListState extends ConsumerState<ContactList> {
     } else if (isLoading) {
       content = loadingWidget(searchItem, context);
     } else if (contactLists.isEmpty && searchItem.trim().isNotEmpty) {
-      content = NoSearchResult(searchItem: searchItem,);
+      content = NoSearchResult(
+        searchItem: searchItem,
+      );
     }
 
     return Scaffold(
@@ -65,7 +67,6 @@ class _ContactListState extends ConsumerState<ContactList> {
         scrolledUnderElevation: 0.0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: const Center(child: Text('Contacts')),
-
       ),
       body: Column(
         children: [
@@ -83,7 +84,8 @@ class _ContactListState extends ConsumerState<ContactList> {
               ? content
               : Expanded(
                   child: RefreshIndicator(
-                    onRefresh: () => ref.read(contactListProvider.notifier).loadItems(),
+                    onRefresh: () =>
+                        ref.read(contactListProvider.notifier).loadItems(),
                     child: ListView.builder(
                       padding: const EdgeInsets.only(left: 25, right: 15),
                       itemCount: contactLists.length,
@@ -97,16 +99,16 @@ class _ContactListState extends ConsumerState<ContactList> {
                 ),
         ],
       ),
-      floatingActionButton: 
-      error.isEmpty ? 
-      FloatingActionButton(
-        onPressed: () {
-          _navigateToCreateContact(context);
-        },
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add),
-      ) 
-      : null,
+      floatingActionButton: error.isEmpty
+          ? FloatingActionButton(            
+              onPressed: () {
+                _navigateToCreateContact(context);
+              },
+              shape: const CircleBorder(),
+              child: const Icon(Icons.add, semanticLabel: 'addContactBtn',),
+              
+            )
+          : null,
     );
   }
 }

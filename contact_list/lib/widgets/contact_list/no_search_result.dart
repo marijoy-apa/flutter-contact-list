@@ -27,6 +27,7 @@ class NoSearchResult extends StatelessWidget {
                     color: Theme.of(context).iconTheme.color,
                     fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
+                semanticsLabel: 'noSearchResult',
               ),
             ),
             const SizedBox(
