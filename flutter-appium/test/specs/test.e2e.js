@@ -4,11 +4,24 @@ const find = require('appium-flutter-finder');
 const assert = require('assert');
 
 const ContactsPage = require('../common/common');
-const PO = require('../pageObjects/contactsPO');
+
+let PO;
+let platform;
+let attribute;
+if (browser.capabilities['platformName'] === 'iOS') {
+    PO = require('../pageObjects/iosPO');
+    attribute = 'name';
+    platform = 'iOS';
+} else {
+    PO = require('../pageObjects/contactsPO');
+    attribute = 'content-desc';
+    platform = 'android';
+}
 
 describe('Create new contact Page', () => {
 
     it('Create New Contacts Page UI should display correctly', async () => {
+        console.log(platform);
         await ContactsPage.waitXpathToExist(PO.createCntctBtn, 10000)
         await ContactsPage.pause(1000);
 
@@ -76,12 +89,14 @@ describe('Create new contact Page', () => {
     })
 
     it('Clicking Add photo should be able to capture an image', async () => {
-        await ContactsPage.clickOn(PO.addPhoto);
-        await ContactsPage.clickOn(PO.cameraCapture);
-        await ContactsPage.waitXpathToExist(PO.confirmCapture, 20000);
-        await ContactsPage.clickOn(PO.confirmCapture);
-        await ContactsPage.waitXpathToExist(PO.field('Change photo'), 4000);
-        await ContactsPage.verifyXpathDisplayed(PO.field('Change photo'));
+        if (platform != 'iOS') {
+            await ContactsPage.clickOn(PO.addPhoto);
+            await ContactsPage.clickOn(PO.cameraCapture);
+            await ContactsPage.waitXpathToExist(PO.confirmCapture, 20000);
+            await ContactsPage.clickOn(PO.confirmCapture);
+            await ContactsPage.waitXpathToExist(PO.field('Change photo'), 4000);
+            await ContactsPage.verifyXpathDisplayed(PO.field('Change photo'));
+        }
     })
     it('Clicking Cancel button should exit the create new contacts page', async () => {
         await ContactsPage.clickOn(PO.cancelBtn);
@@ -134,15 +149,15 @@ describe('Create new contact Page', () => {
         await ContactsPage.setText(PO.phoneTF, '0890898');
         await ContactsPage.setText(PO.firstNameTF, 'Luna');
         await ContactsPage.setText(PO.lastNameTF, 'Moon');
-        await ContactsPage.clickOn(PO.addPhoto);
-        await ContactsPage.clickOn(PO.cameraCapture);
-        await ContactsPage.waitXpathToExist(PO.confirmCapture, 20000);
-        await ContactsPage.clickOn(PO.confirmCapture);
-        await ContactsPage.waitXpathToExist(PO.field('Change photo'), 4000);
-        await ContactsPage.verifyXpathDisplayed(PO.field('Change photo'));
-
+        if (platform != 'iOS') {
+            await ContactsPage.clickOn(PO.addPhoto);
+            await ContactsPage.clickOn(PO.cameraCapture);
+            await ContactsPage.waitXpathToExist(PO.confirmCapture, 20000);
+            await ContactsPage.clickOn(PO.confirmCapture);
+            await ContactsPage.waitXpathToExist(PO.field('Change photo'), 4000);
+            await ContactsPage.verifyXpathDisplayed(PO.field('Change photo'));
+        }
         await ContactsPage.clickOn(PO.addToEmergencyContacts);
-
         await ContactsPage.clickOn(PO.doneBtn);
 
         await ContactsPage.waitXpathToNotExist(PO.doneBtn, 10000);
@@ -182,15 +197,16 @@ describe('Contact details page screen', () => {
     })
 
     it('I should be able to make phone call directly for contacts with one number', async () => {
-        await ContactsPage.clickOn(PO.field('Call'));
-        await ContactsPage.clickOn(PO.allowCalls);
-        await ContactsPage.waitXpathToExist(PO.endCalls, 10000);
-        await ContactsPage.verifyXpathDisplayed(PO.endCalls);
-        await ContactsPage.clickOn(PO.endCalls);
+        if (platform != 'iOS') {
+            await ContactsPage.clickOn(PO.field('Call'));
+            await ContactsPage.clickOn(PO.allowCalls);
+            await ContactsPage.waitXpathToExist(PO.endCalls, 10000);
+            await ContactsPage.verifyXpathDisplayed(PO.endCalls);
+            await ContactsPage.clickOn(PO.endCalls);
 
+        }
         await ContactsPage.clickOn(PO.field('Contacts'));
         await ContactsPage.waitXpathToExist(PO.contactList);
-
 
     })
 
@@ -233,10 +249,12 @@ describe('Contact details page screen', () => {
 
     it('Selecting a number should call the number', async () => {
         await ContactsPage.clickOn(PO.field("0890898 (Mobile)"));
-        await ContactsPage.waitXpathToExist(PO.endCalls, 10000);
-        await ContactsPage.verifyXpathDisplayed(PO.endCalls);
-        await ContactsPage.verifyText(PO.callContactName, '0890898')
-        await ContactsPage.clickOn(PO.endCalls);
+        if (platform != 'iOS') {
+            await ContactsPage.waitXpathToExist(PO.endCalls, 10000);
+            await ContactsPage.verifyXpathDisplayed(PO.endCalls);
+            await ContactsPage.verifyText(PO.callContactName, '0890898')
+            await ContactsPage.clickOn(PO.endCalls);
+        }
     })
 
     it('Should be able to navigate to edit page when clicking Edit button', async () => {
@@ -307,12 +325,18 @@ describe('Edit Contact page', () => {
     })
 
     it('Clicking Add photo should be able to capture an image', async () => {
-        await ContactsPage.clickOn(PO.addPhoto);
-        await ContactsPage.clickOn(PO.cameraCapture);
-        await ContactsPage.waitXpathToExist(PO.confirmCapture, 20000);
-        await ContactsPage.clickOn(PO.confirmCapture);
-        await ContactsPage.waitXpathToExist(PO.field('Change photo'), 4000);
-        await ContactsPage.verifyXpathDisplayed(PO.field('Change photo'));
+        if (platform != 'iOS') {
+
+            await ContactsPage.clickOn(PO.addPhoto);
+            await ContactsPage.clickOn(PO.cameraCapture);
+            await ContactsPage.waitXpathToExist(PO.confirmCapture, 20000);
+            await ContactsPage.clickOn(PO.confirmCapture);
+            await ContactsPage.waitXpathToExist(PO.field('Change photo'), 4000);
+            await ContactsPage.verifyXpathDisplayed(PO.field('Change photo'));
+        }
+
+
+
     })
     it('Clicking Cancel button should exit the create new contacts page', async () => {
         await ContactsPage.clickOn(PO.cancelBtn);
@@ -387,23 +411,23 @@ describe('Contact List page', () => {
         await ContactsPage.clickOn(PO.contactsTabBtn);
 
         //adding to emergency 
-        var icon = await ContactsPage.getAttributeValue(PO.emergencyBtn, 'content-desc');
+        var icon = await ContactsPage.getAttributeValue(PO.emergencyBtn, attribute);
         assert.strictEqual(icon, 'emergencyBtn-false', 'Emergency button should be false initially')
         await ContactsPage.clickOn(PO.emergencyBtn);
         await ContactsPage.pause(1000);
-        icon = await ContactsPage.getAttributeValue(PO.emergencyBtn, 'content-desc');
+        icon = await ContactsPage.getAttributeValue(PO.emergencyBtn, attribute);
         assert.strictEqual(icon, 'emergencyBtn-true', 'Emergency button should be updated to true')
 
         //removing from emergency
         await ContactsPage.clickOn(PO.emergencyBtn);
         await ContactsPage.pause(500);
-        icon = await ContactsPage.getAttributeValue(PO.emergencyBtn, 'content-desc');
+        icon = await ContactsPage.getAttributeValue(PO.emergencyBtn, attribute);
         assert.strictEqual(icon, 'emergencyBtn-false', 'Emergency button should be updated to false')
 
     })
 
     it('Contact item should be deleted when I click the delete button', async () => {
-        const name = await ContactsPage.getAttributeValue(`(${PO.contactList})[1]`, 'content-desc');
+        const name = await ContactsPage.getAttributeValue(`(${PO.contactList})[1]`, attribute);
         await ContactsPage.verifyXpathDisplayed(PO.field(name));
         await ContactsPage.clickOn(`(${PO.deleteBtn})[1]`)
         await ContactsPage.pause(500);
@@ -436,14 +460,14 @@ describe('Emergency List page', () => {
 
     it('Only emergency contacts should be displayed in the emergency list', async () => {
         assert.strictEqual(await ContactsPage.getXpathLength(PO.emergencyBtn), 3, 'Emergency button should be 3')
-        var icon = await ContactsPage.getAttributeValue(PO.emergencyBtn, 'content-desc');
+        var icon = await ContactsPage.getAttributeValue(PO.emergencyBtn, attribute);
         assert.strictEqual(icon, 'emergencyBtn-true', 'Emergency button should be to true')
-        icon = await ContactsPage.getAttributeValue(`(${PO.emergencyBtn})[2]`, 'content-desc');
+        icon = await ContactsPage.getAttributeValue(`(${PO.emergencyBtn})[2]`, attribute);
         assert.strictEqual(icon, 'emergencyBtn-true', 'Emergency button should be to true')
     })
 
     it('Contact item should be removed in Emergency list when I click its emergency icon', async () => {
-        const name = await ContactsPage.getAttributeValue(`(${PO.contactList})[1]`, 'content-desc');
+        const name = await ContactsPage.getAttributeValue(`(${PO.contactList})[1]`, attribute);
         await ContactsPage.verifyXpathDisplayed(PO.field(name));
         await ContactsPage.clickOn(`(${PO.emergencyBtn})[1]`)
         await ContactsPage.pause(500);
@@ -451,7 +475,7 @@ describe('Emergency List page', () => {
     })
 
     it('Contact item should be removed in Emergency/Contact list when I click the delete button', async () => {
-        const name = await ContactsPage.getAttributeValue(`(${PO.contactList})[1]`, 'content-desc');
+        const name = await ContactsPage.getAttributeValue(`(${PO.contactList})[1]`, attribute);
         await ContactsPage.verifyXpathDisplayed(PO.field(name));
         await ContactsPage.clickOn(`(${PO.deleteBtn})[1]`)
         await ContactsPage.pause(500);
@@ -486,12 +510,7 @@ describe('Emergency List page', () => {
 
     it('No Contacts should display when Emergency Contact is empty', async () => {
         await ContactsPage.clickOn(PO.contactsTabBtn);
-        await ContactsPage.clickOn(PO.deleteBtn);
-        await ContactsPage.pause(1000)
-        await ContactsPage.clickOn(PO.deleteBtn);
-        await ContactsPage.pause(1000)
-        await ContactsPage.clickOn(PO.deleteBtn);
-        await ContactsPage.pause(1000)
+        await ContactsPage.emptyContactListPage();
         await ContactsPage.verifyXpathDisplayed(PO.field('No Contacts'));
         await ContactsPage.verifyXpathDisplayed(PO.field("Contacts you've added will appear here"))
     })
